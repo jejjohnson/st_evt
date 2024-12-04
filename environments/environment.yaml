@@ -1,0 +1,95 @@
+name: stevt
+channels:
+  # - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  # Standard Libraries
+  # ! The new numpy release breaks things... clamping this down for now
+  # - numpy<=1.26.4 # Numerical Linear Algebra
+  - numpy # Numerical Linear Algebra
+  - scipy # Scientific Computing
+  - xarray # Data structures
+  - xvec
+  - scikit-learn # Machine Learning
+  - statsmodels
+  - scikit-image
+  # - pandas<=2.1.0
+  - pandas
+  - geopandas
+  - zarr
+  - netcdf4
+  - pint-xarray
+  - regionmask
+  - metpy
+  - openpyxl
+  - xoa
+  # Plotting Libraries
+  - matplotlib # standard plotting library
+  - seaborn # Stats viz library
+  - cartopy
+  - arviz
+  # JAX
+  - jaxlib
+  - jax
+  # Necessary Packages for the GDAL and stuff
+  - gcc
+  - gxx
+  - gxx_linux-64==11.1.0
+  - boost
+  - libboost-devel
+  - eigen
+  - cmake
+  - libstdcxx-ng
+  # DATA
+  - dvc
+  # DOCUMENTATION
+  - mystmd
+  - jupytext
+  - jupyter-book
+  - myst-parser
+  # GUI
+  - ipython
+  - ipywidgets
+  - ipykernel
+  - tqdm
+  - pip
+  - pip:
+      # Jax framework
+      - equinox
+      - jaxtyping
+      # MATHEMATICS
+      - einops
+      - einx
+      # optimization
+      - optax
+      # probabilistic
+      - numpyro
+      - tinygp
+      - diffrax
+      - "tfp-nightly[jax]"
+      # - gpjax
+      # formatting
+      - black
+      - pylint
+      - isort
+      - flake8
+      - mypy
+      - pytest
+      - pre-commit
+      - rich
+      - sh
+      - pudb
+      # Notebook stuff
+      - pyprojroot
+      - autoroot
+      - python-dotenv
+      - typer
+      # logging
+      - wandb
+      - loguru
+      - hydra-core
+      - hydra-zen
+      # plotting
+      - celluloid
+      - corner
