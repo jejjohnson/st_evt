@@ -35,4 +35,10 @@ chapters:
           - file: notebooks/models/1_timeseries/nonstationary/1_station_t2m_gevd_eda
           - file: notebooks/models/1_timeseries/nonstationary/2_station_t2m_gevd_model_mcmc
           - file: notebooks/models/1_timeseries/nonstationary/3_station_t2m_gevd_analysis
+      - title: SpatioTemporalField - Stationary
+        sections:
+          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/1_spain_t2m_gevd_eda
+          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2a_spain_t2m_gevd_model_mcmc
+          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2b_spain_t2m_gevd_analysis_station
+          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2c_spain_t2m_gevd_analysis_region
           
