@@ -1,0 +1,38 @@
+# Table of Contents
+#
+# Myst will respect:
+# 1. New pages
+#      - file: relative/path/to/page
+# 2. New sections without an associated page
+#      - title: Folder Title
+#        sections: ...
+# 3. New sections with an associated page
+#      - file: relative/path/to/page
+#        sections: ...
+#
+# Note: Titles defined on pages here are not recognized.
+#
+# This spec is based on the JupyterBook table of contents.
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: README
+chapters:
+  - title: Datasets
+    sections:
+      - file: notebooks/datasets/datasets_overview.md
+      - file: notebooks/datasets/aemet/0.1_evt_stations_pr.ipynb
+      - file: notebooks/datasets/aemet/0.2_evt_stations_t2max.ipynb
+  - title: Tutorials
+    sections:
+      - file: notes/tutorials.md
+      - title: Extremes
+        sections:
+          - file: notebooks/bm_extremes/aemet/1.1.1_bm_extremes_t2max_eda
+          - file: notebooks/bm_extremes/aemet/1.2_bm_extremes_practical
+      - title: Time Series - NonStationary
+        sections:
+          - file: notebooks/models/1_timeseries/nonstationary/1_station_t2m_gevd_eda
+          - file: notebooks/models/1_timeseries/nonstationary/2_station_t2m_gevd_model_mcmc
+          - file: notebooks/models/1_timeseries/nonstationary/3_station_t2m_gevd_analysis
+          

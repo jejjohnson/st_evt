@@ -80,6 +80,7 @@ dependencies:
       - rich
       - sh
       - pudb
+      - pyextremes
       # Notebook stuff
       - pyprojroot
       - autoroot
