@@ -28,13 +28,33 @@ from numpyro.infer import Predictive
 import jax.random as jrandom
 from numpyro.infer import MCMC, NUTS, SVI, Trace_ELBO, init_to_value, init_to_median
 import typer
+from omegaconf import OmegaConf
 import arviz as az
+from st_evt.viz import (
+    plot_scatter_ts,
+    plot_histogram,
+    plot_density,
+    plot_return_level_gevd_manual_unc_multiple,
+    plot_periods,
+    plot_periods_diff
+)
+from st_evt.extremes import estimate_return_level_gevd, calculate_exceedence_probs
+import matplotlib.pyplot as plt
+
+plt.rcParams['figure.dpi'] = 300  # Increase the DPI for higher quality
+plt.style.use(
+    "https://raw.githubusercontent.com/ClimateMatchAcademy/course-content/main/cma.mplstyle"
+)
+
+
 
 app = typer.Typer()
+
 
 @app.command()
 def train_model_station(
     load_path: str="data/ml_ready/",
+    save_path: str="data/results/",
     num_mcmc_samples: int=1_000,
     num_chains: int=4,
     num_warmup: int=10_000,
@@ -43,6 +63,8 @@ def train_model_station(
     gmst_min: float=0.0,
     gmst_max: float=2.5,
 ):
+    logger.debug(f"Load Path: {load_path}")
+    logger.debug(f"Save Path: {save_path}")
     rng_key = jrandom.PRNGKey(seed)
     DATA_URL = Path(load_path).joinpath("t2max_stations_bm_year.zarr")
     
@@ -215,18 +237,102 @@ def train_model_station(
         live.log_metric("elpd_waic_se", stats.se)
         live.log_metric("p_waic", stats.p_waic)
 
+    logger.info(f"Save Results...")
+    mcmc_results_path = Path(save_path).joinpath(f"az_nonstationary.zarr")
+    az_ds.to_zarr(str(mcmc_results_path))
+    
+    posterior_params_path = Path(save_path).joinpath(f"az_posterior_params.json")
+    posterior_samples = {k: np.asarray(v).tolist() for k, v in posterior_samples.items()}
+    OmegaConf.save(posterior_samples, posterior_params_path)
+    
+    
 
     pass
 
 
 @app.command()
-def evaluate_model():
-    raise NotImplementedError()
+def evaluate_model_station(
+    load_path: str="data/results/",
+    save_path: str="data/results/",
+):
+    logger.info("Starting Evaluation...")
+    
+    figures_path = Path(save_path)
+    
+    az_data_url = Path(load_path).joinpath("az_nonstationary.zarr")
+    logger.info(f"Loading dataset")
+    logger.debug(f"AZ Dataset: {az_data_url}")
+    az_ds = az.from_zarr(str(az_data_url))
+    
+    RETURN_PERIODS_GEVD = np.logspace(0.001, 4, 100)
+
+    fn_gevd = jax.jit(estimate_return_level_gevd)
+
+    def calculate_return_period(return_periods, location, scale, shape):
+        rl = jax.vmap(fn_gevd, in_axes=(0,None,None,None))(return_periods, location, scale, shape)
+        return rl
+
+    logger.info("Calculating Return Period")
+    az_ds.predictions["return_level_100"] = xr.apply_ufunc(
+        calculate_return_period,
+        [100],
+        az_ds.predictions.location,
+        az_ds.predictions.scale,
+        az_ds.predictions.concentration,
+        input_core_dims=[[""], ["draw"], ["draw"], ["draw"]],
+        output_core_dims=[["draw"]],
+        vectorize=True
+    )
+
+    az_ds.predictions["return_level"] = xr.apply_ufunc(
+        calculate_return_period,
+        RETURN_PERIODS_GEVD,
+        az_ds.predictions.location,
+        az_ds.predictions.scale,
+        az_ds.predictions.concentration,
+        input_core_dims=[["return_period"], ["draw"], ["draw"], ["draw"]],
+        output_core_dims=[["return_period", "draw"]],
+        vectorize=True
+    )
+    az_ds = az_ds.assign_coords({"return_period": RETURN_PERIODS_GEVD})
+    variables = [
+        "concentration",
+        "scale",
+        "location_bias",
+        "location_weight", 
+        ]
 
 
-@app.command()
-def predict_model():
-    raise NotImplementedError()
+
+
+    logger.info("Plotting Trace")
+    fig = az.plot_trace(
+        az_ds.posterior, 
+        var_names=variables,
+        figsize=(10, 7)
+    );
+    plt.gcf().set_dpi(300)
+    plt.tight_layout()
+    plt.savefig(figures_path.joinpath("trace.png"))
+    plt.show()
+    
+    logger.info("Plotting Parameter Joint Plot")
+    fig = az.plot_pair(
+        az_ds.posterior,
+        # group="posterior",
+        var_names=variables,
+        kind=["scatter", "kde"],
+        kde_kwargs={"fill_last": False},
+        marginals=True,
+        # coords=coords,
+        point_estimate="median",
+        figsize=(10, 8),
+    )
+    plt.tight_layout()
+    plt.gcf().set_dpi(300)
+    plt.savefig(figures_path.joinpath("params_joint.png"))
+    plt.show()
+
 
 
 if __name__ == '__main__':

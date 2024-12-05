@@ -77,6 +77,27 @@ These steps will include:
 python st_evt/_src/modules/models/ts_stationary/aemet.py train-model-station --load-path "data/ml_ready"
 ```
 
+**Simple Time Series**
+
+```bash
+# TRAIN
+dvc exp run pipelines/models/timeseries/dvc.yaml:aemet_stations_mcmc_train
+# EVALUATION
+dvc exp run pipelines/models/timeseries/dvc.yaml:aemet_stations_mcmc_evaluate
+```
+
+**Simple Time Series**
+
+```bash
+# TRAIN
+dvc exp run pipelines/models/timeseries/dvc.yaml:aemet_stations_mcmc_train --set-param eda.station_id='3129A'
+# EVALUATION
+dvc exp run pipelines/models/timeseries/dvc.yaml:aemet_stations_mcmc_evaluate
+```
+
+
+
+
 ---
 ### III: Visualization
 

@@ -1,8 +1,10 @@
 filepaths:
   ml_ready_path: ../../../data/ml_ready
+  ml_results_path: ../../../data/ml_results
 eda:
-  station_id: 8414A
+  station_id: 3129A
 model:
+  model_type: linear
   seed: 123
   num_chains: 4
   num_mcmc_samples: 1_000

@@ -1,13 +1,37 @@
 stages:
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
-  aemet_stations_mcmc:
-    cmd: python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py train-model-station
-      --load-path '${filepaths.ml_ready_path}' --station-id '${eda.station_id}'
+  aemet_stations_mcmc_train:
+    cmd: >-
+      python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py train-model-station
+      --load-path '${filepaths.ml_ready_path}'
+      --save-path '${filepaths.ml_results_path}/aemet/${eda.station_id}/nonstationary/${model.model_type}'
+      --station-id '${eda.station_id}'
     params:
     - filepaths.ml_ready_path
+    - filepaths.ml_results_path
     - eda.station_id
+    - model.model_type
     deps:
     - ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
+    outs:
+    - ../../../data/ml_results/aemet/${eda.station_id}/nonstationary/${model.model_type}/az_nonstationary.zarr
+    - ../../../data/ml_results/aemet/${eda.station_id}/nonstationary/${model.model_type}/az_posterior_params.json
+  aemet_stations_mcmc_evaluate:
+    cmd: >-
+      python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py evaluate-model-station
+      --load-path '${filepaths.ml_results_path}/aemet/${eda.station_id}/nonstationary/${model.model_type}'
+      --save-path '${filepaths.ml_results_path}/aemet/${eda.station_id}/nonstationary/${model.model_type}/figures'
+    params:
+    - filepaths.ml_ready_path
+    - filepaths.ml_results_path
+    - eda.station_id
+    - model.model_type
+    deps:
+    - ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
+    outs:
+    - ../../../data/ml_results/aemet/${eda.station_id}/nonstationary/${model.model_type}/figures/trace.png
+    - ../../../data/ml_results/aemet/${eda.station_id}/nonstationary/${model.model_type}/figures/params_joint.png
+
 metrics:
 - dvclive/metrics.json
 plots:
