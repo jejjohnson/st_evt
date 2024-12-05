@@ -1,0 +1,7 @@
+filepaths:
+  raw_path: data/raw
+  clean_path: data/clean
+  viz_path: data/viz
+  viz_eda_path: /home/juanjohn/pool_data/dynev4eo/figures
+eda:
+  station_id: 3129A

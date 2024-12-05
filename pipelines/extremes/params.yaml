@@ -1,0 +1,9 @@
+filepaths:
+  raw_path: ../../data/raw
+  clean_path: ../../data/clean
+  ml_ready_path: ../../data/ml_ready
+  viz_path: ../../data/viz
+  viz_eda_path: /home/juanjohn/pool_data/dynev4eo/figures
+
+extremes:
+  months: [6, 7, 8]

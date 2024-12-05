@@ -1,0 +1,15 @@
+stages:
+  # DOWNLOAD AEMET STATION DATA FROM GDRIVE
+  aemet_stations_mcmc:
+    cmd: python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py train-model-station
+      --load-path '${filepaths.ml_ready_path}' --station-id '${eda.station_id}'
+    params:
+    - filepaths.ml_ready_path
+    - eda.station_id
+    deps:
+    - ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
+metrics:
+- dvclive/metrics.json
+plots:
+- dvclive/plots/metrics:
+    x: step

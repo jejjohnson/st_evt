@@ -81,6 +81,7 @@ dependencies:
       - sh
       - pudb
       - pyextremes
+      - gdown
       # Notebook stuff
       - pyprojroot
       - autoroot

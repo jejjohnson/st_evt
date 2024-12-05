@@ -1,0 +1,14 @@
+schema: '2.0'
+stages:
+  aemet_stations_mcmc:
+    cmd: python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py train-model-station
+      --load-path '../../../data/ml_ready' --station-id '8414A'
+    deps:
+    - path: ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
+      hash: md5
+      md5: 29d820579658f551dd9eee0f6785b8b3
+      size: 6407
+    params:
+      params.yaml:
+        eda.station_id: 8414A
+        filepaths.ml_ready_path: ../../../data/ml_ready

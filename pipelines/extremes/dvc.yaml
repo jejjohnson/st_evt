@@ -1,0 +1,14 @@
+stages:
+  # DOWNLOAD AEMET STATION DATA FROM GDRIVE
+  aemet_bm_summer_extremes:
+   cmd: python ../../st_evt/_src/modules/extremes/aemet.py aemet-t2m-bm-year --load-path '${filepaths.clean_path}' --save-path '${filepaths.ml_ready_path}'
+   params:
+     - filepaths.clean_path
+     - filepaths.ml_ready_path
+     - extremes.months
+   deps:
+    - ../../st_evt/_src/modules/extremes/aemet.py
+    - ../../data/clean/gmst_david.zarr
+    - ../../data/clean/t2max_stations.zarr
+   outs:
+     - ../../data/ml_ready/t2max_stations_bm_year.zarr

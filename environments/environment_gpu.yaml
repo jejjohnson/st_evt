@@ -78,6 +78,7 @@ dependencies:
       - rich
       - sh
       - pudb
+      - gdown
       # Notebook stuff
       - pyprojroot
       - autoroot
