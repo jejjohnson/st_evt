@@ -1,38 +1,33 @@
+vars:
+  - raw_path: data/raw
+  - clean_path: data/clean
+  - ml_ready_path: data/ml_ready
 stages:
   # CLEAN AEMET STATION DATA - 2m Max Temperature
   clean_aemet_t2max:
     wdir: ./../../
-    cmd: python st_evt/_src/modules/clean/aemet.py clean-t2m-stations --load-path '${filepaths.raw_path}/aemet' --save-path '${filepaths.clean_path}/aemet'
-    params:
-     - filepaths.raw_path
-     - filepaths.clean_path
+    cmd: python st_evt/_src/modules/clean/aemet.py clean-t2m-stations --load-path '${raw_path}/aemet' --save-path '${clean_path}/aemet'
     deps:
-     - data/raw/aemet/tmax_homo.csv
-     - data/raw/aemet/spain_stations.csv
-     - data/raw/aemet/red_feten.csv
+     - ${raw_path}/aemet/tmax_homo.csv
+     - ${raw_path}/aemet/spain_stations.csv
+     - ${raw_path}/aemet/red_feten.csv
     outs:
      - data/clean/aemet/t2max_stations.zarr
   # CLEAN AEMET STATION DATA - Precipitation
   clean_aemet_pr:
     wdir: ./../../
-    cmd: python st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path '${filepaths.raw_path}/aemet' --save-path '${filepaths.clean_path}/aemet'
-    params:
-     - filepaths.raw_path
-     - filepaths.clean_path
+    cmd: python st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path '${raw_path}/aemet' --save-path '${clean_path}/aemet'
     deps:
-     - data/raw/aemet/pr.csv
-     - data/raw/aemet/spain_stations.csv
-     - data/raw/aemet/red_feten.csv
+     - ${raw_path}/aemet/pr.csv
+     - ${raw_path}/aemet/spain_stations.csv
+     - ${raw_path}/aemet/red_feten.csv
     outs:
      - data/clean/aemet/pr_stations.zarr
   # CLEAN AEMET STATION DATA - 2m Max Temperature
   clean_gmst_david:
     wdir: ./../../
-    cmd: python st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path '${filepaths.raw_path}/gmst' --save-path '${filepaths.clean_path}/gmst'
-    params:
-     - filepaths.raw_path
-     - filepaths.clean_path
+    cmd: python st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path '${raw_path}/gmst' --save-path '${clean_path}/gmst'
     deps:
-     - data/raw/gmst/gmst_david.xlsx
+     - ${raw_path}/gmst/gmst_david.xlsx
     outs:
-     - data/clean/gmst/gmst_david.zarr
+     - ${clean_path}/gmst/gmst_david.zarr

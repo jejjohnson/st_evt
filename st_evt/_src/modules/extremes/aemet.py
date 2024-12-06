@@ -1,6 +1,7 @@
 import autoroot
 from typing import List
 import typer
+from typing_extensions import Annotated
 from loguru import logger
 from pathlib import Path
 import xarray as xr
@@ -13,16 +14,18 @@ app = typer.Typer()
 
 @app.command()
 def aemet_t2m_bm_year(
-    load_path: str="",
+    data_path: str="",
+    cov_path: str="",
     save_path: str="",
-    months: List[int] = [6, 7, 8],
+    months: str = '6, 7, 8',
     year_min: str="1960",
     year_max: str="2019",
+    output_name: str | None = None
     ):
     logger.info("Starting Script...")
     logger.info("Loading Data")
     # LOAD DATA
-    data_url = Path(load_path).joinpath("t2max_stations.zarr")
+    data_url = Path(data_path).joinpath("t2max_stations.zarr")
     ds = xr.open_dataset(data_url, engine="zarr")
     ds = ds.transpose("time", "station_id")
     logger.info("Selecting Station")
@@ -37,6 +40,9 @@ def aemet_t2m_bm_year(
     
     # SELECT MONTHS
     logger.info("Selecting Months...")
+    months = months.split(",")
+    months = list(map(int, months))
+    logger.debug(f"Months: {months}")
     ds = ds.sel(time=ds["time"].dt.month.isin(months))
     
     ds = ds.sel(time=slice(year_min, year_max))
@@ -54,7 +60,7 @@ def aemet_t2m_bm_year(
     
     # ADD COVARIATE
     logger.info(f"Adding Covariate")
-    covariate_path = Path(load_path).joinpath("gmst_david.zarr")
+    covariate_path = Path(cov_path).joinpath("gmst_david.zarr")
     ds_gmst = xr.open_dataset(covariate_path, engine="zarr").load()
     ds_gmst = ds_gmst.interp_like(ds_bm)
     ds_bm["gmst"] = ds_gmst.GISS_smooth
@@ -71,7 +77,9 @@ def aemet_t2m_bm_year(
     
     # SAVE DATA
     logger.info("Saving data...")
-    full_path = Path(save_path).joinpath("t2max_stations_bm_year.zarr")
+    if output_name is None:
+        output_name = "t2max_stations_bm_year"
+    full_path = Path(save_path).joinpath(f"{output_name}.zarr")
     logger.debug(f"Save Path: {full_path}")
     
     ds_bm.to_zarr(full_path)

@@ -1,13 +1,7 @@
 import autoroot
 import typer
 import pandas as pd
-import numpy as np
-import xarray as xr
-from tqdm import tqdm
 from loguru import logger
-from st_evt import validate_longitude, validate_latitude
-from metpy.units import units
-import pint_xarray
 from pathlib import Path
 
 app = typer.Typer()
@@ -18,7 +12,8 @@ def clean_gmst_raw(
     load_path: str="data/raw/",
     save_path: str="data/clean/",
     ):
-    pass
+    raise NotImplementedError()
+
 
 @app.command()
 def clean_gmst_david(

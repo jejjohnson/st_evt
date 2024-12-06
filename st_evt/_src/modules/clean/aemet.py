@@ -15,9 +15,9 @@ app = typer.Typer()
 
 @app.command()
 def clean_pr_stations(
-    load_path: str="data/raw/",
-    save_path: str="data/clean/",
-    ):
+    load_path: str = "data/raw/",
+    save_path: str = "data/clean/",
+):
     logger.info(f"Starting script...!")
 
     logger.info(f"Sorting out paths...")
@@ -33,7 +33,7 @@ def clean_pr_stations(
     logger.info(f"Loading station coordinates...")
     df_coords = pd.read_csv(stations, delimiter=";", index_col=0, decimal=",")
 
-    logger.info(f"Loading max temperature values...")
+    logger.info(f"Loading precipitation values...")
     df_all = pd.read_csv(pr_dataset, index_col=0)
 
     coordinates = dict(
@@ -53,12 +53,12 @@ def clean_pr_stations(
             ids = df_all[str(iname)]
             icoords = df_coords.loc[str(iname)]
             # extract coordinates
-            coordinates["station_id"].append(icoords.name)
-            coordinates["station_name"].append(icoords["name"].lower())
+            coordinates["station_id"].append(str(icoords.name))
+            coordinates["station_name"].append(str(icoords["name"].lower()))
             coordinates["lat"].append(np.float32(icoords["lat"]))
             coordinates["lon"].append(np.float32(icoords["lon"]))
             coordinates["alt"].append(np.float32(icoords["alt"]))
-            coordinates["values"].append(ids.values)
+            coordinates["values"].append(np.float32(ids.values))
         except KeyError:
             pass
 
@@ -87,28 +87,25 @@ def clean_pr_stations(
 
     ds_pr = ds_pr.sortby("time")
 
-
     ds_pr["pr"].attrs["standard_name"] = "daily_cumulative_precipitation"
     ds_pr["pr"].attrs["long_name"] = "Daily Cumulative Precipitation"
-
 
     ds_pr["alt"].attrs["standard_name"] = "altitude"
     ds_pr["alt"].attrs["long_name"] = "Altitude"
 
-    # # validate units
-    # ds_pr["lon"].attrs["units"] = "degree"
-    # ds_pr["lat"].attrs["units"] = "degree"
-    # ds_pr = ds_pr.pint.dequantify()
+    logger.info(f"Validating All Units...")
     ds_pr = ds_pr.pint.quantify(
-        {"pr": "mm / day",
-        "lon": units.degrees_east,
-        "lat": units.degrees_north,
-        "alt": "meters"
+        {
+            "pr": "mm / day",
+            "lon": units.degrees_east,
+            "lat": units.degrees_north,
+            "alt": "meters"
         }
     )
     ds_pr = ds_pr.pint.dequantify()
 
     # Load the GOOD Stations
+    logger.info(f"Adding Red Feten Stations...")
     red_feten_stations = pd.read_csv(red_feten)
     
     tmax_red_feten_stations = np.intersect1d(red_feten_stations.id, ds_pr.station_id)
@@ -121,7 +118,6 @@ def clean_pr_stations(
     # assign as coordinates
     ds_pr = ds_pr.assign_coords({"red_feten_mask": red_feten_mask})
 
-    #
     logger.info(f"Saving data to disk...")
     
     full_save_path = Path(save_path).joinpath("pr_stations.zarr")
@@ -167,7 +163,6 @@ def clean_t2m_stations(
     )
 
     logger.info(f"Creating xarray datastructure...")
-    xr_datasets = xr.Dataset()
     pbar = tqdm(df_all.columns, leave=False)
     for iname in pbar:
 
@@ -177,12 +172,12 @@ def clean_t2m_stations(
             ids = df_all[str(iname)]
             icoords = df_coords.loc[str(iname)]
             # extract coordinates
-            coordinates["station_id"].append(icoords.name)
-            coordinates["station_name"].append(icoords["name"].lower())
+            coordinates["station_id"].append(str(icoords.name))
+            coordinates["station_name"].append(str(icoords["name"].lower()))
             coordinates["lat"].append(np.float32(icoords["lat"]))
             coordinates["lon"].append(np.float32(icoords["lon"]))
             coordinates["alt"].append(np.float32(icoords["alt"]))
-            coordinates["values"].append(ids.values)
+            coordinates["values"].append(np.float32(ids.values))
         except KeyError:
             pass
 
@@ -211,18 +206,13 @@ def clean_t2m_stations(
 
     ds_pr = ds_pr.sortby("time")
 
-
     ds_pr["t2m_max"].attrs["standard_name"] = "2m_temperature_max"
     ds_pr["t2m_max"].attrs["long_name"] = "2m Temperature Max"
-
 
     ds_pr["alt"].attrs["standard_name"] = "altitude"
     ds_pr["alt"].attrs["long_name"] = "Altitude"
 
-    # # validate units
-    # ds_pr["lon"].attrs["units"] = "degree"
-    # ds_pr["lat"].attrs["units"] = "degree"
-    # ds_pr = ds_pr.pint.dequantify()
+    logger.info(f"Validating All Units...")
     ds_pr = ds_pr.pint.quantify(
         {"t2m_max": "degC", 
         "lon": units.degrees_east,
@@ -233,6 +223,7 @@ def clean_t2m_stations(
     ds_pr = ds_pr.pint.dequantify()
 
     # Load the GOOD Stations
+    logger.info(f"Adding Red Feten Stations...")
     red_feten_stations = pd.read_csv(red_feten)
     
     tmax_red_feten_stations = np.intersect1d(red_feten_stations.id, ds_pr.station_id)

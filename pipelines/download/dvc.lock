@@ -34,9 +34,6 @@ stages:
       hash: md5
       md5: 77def09a1b24facca2bfb5d2aeb7d643
       size: 1293
-    params:
-      params.yaml:
-        filepaths.raw_path: data/raw
     outs:
     - path: data/raw/gmst/gmst_david.xlsx
       hash: md5
