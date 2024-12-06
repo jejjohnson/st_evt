@@ -4,22 +4,25 @@
 stages:
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
   download_aemet:
-   cmd: python ../../st_evt/_src/modules/download/aemet.py --filepath '${filepaths.raw_path}'
-   params:
+    desc: Download AEMET station data from google drive.
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/download/aemet.py --filepath '${filepaths.raw_path}/aemet'
+    params:
      - filepaths.raw_path
-   deps:
-    - ../../st_evt/_src/modules/download/aemet.py
-   outs:
-     - ../../data/raw/tmax_homo.csv
-     - ../../data/raw/pr.csv
-     - ../../data/raw/spain_stations.csv
-     - ../../data/raw/red_feten.csv
+    deps:
+     - st_evt/_src/modules/download/aemet.py
+    outs:
+     - data/raw/aemet/tmax_homo.csv
+     - data/raw/aemet/pr.csv
+     - data/raw/aemet/spain_stations.csv
+     - data/raw/aemet/red_feten.csv
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
   download_gmst:
-   cmd: python ../../st_evt/_src/modules/download/gmst.py --filepath '${filepaths.raw_path}'
-   params:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/download/gmst.py --filepath '${filepaths.raw_path}/gmst'
+    params:
      - filepaths.raw_path
-   deps:
-    - ../../st_evt/_src/modules/download/gmst.py
-   outs:
-     - ../../data/raw/gmst_david.xlsx
+    deps:
+     - st_evt/_src/modules/download/gmst.py
+    outs:
+     - data/raw/gmst/gmst_david.xlsx

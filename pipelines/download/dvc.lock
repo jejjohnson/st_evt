@@ -1,44 +1,44 @@
 schema: '2.0'
 stages:
   download_aemet:
-    cmd: python ../../st_evt/_src/modules/download/aemet.py --filepath '../../data/raw'
+    cmd: python st_evt/_src/modules/download/aemet.py --filepath 'data/raw/aemet'
     deps:
-    - path: ../../st_evt/_src/modules/download/aemet.py
+    - path: st_evt/_src/modules/download/aemet.py
       hash: md5
-      md5: 805c267bf0cec007c21508a51a3a6658
-      size: 2544
+      md5: 5bbc017d3dce1fd3488ce62b2df5eb21
+      size: 2675
     params:
       params.yaml:
-        filepaths.raw_path: ../../data/raw
+        filepaths.raw_path: data/raw
     outs:
-    - path: ../../data/raw/pr.csv
+    - path: data/raw/aemet/pr.csv
       hash: md5
       md5: 4df4d9cfa72ce987493ab678261d49b6
       size: 133341777
-    - path: ../../data/raw/red_feten.csv
+    - path: data/raw/aemet/red_feten.csv
       hash: md5
       md5: d6e6de1a592e3d1cef8d9a2b5df89e05
       size: 8083
-    - path: ../../data/raw/spain_stations.csv
+    - path: data/raw/aemet/spain_stations.csv
       hash: md5
       md5: 599930cd5e266b02750c3e451696e101
       size: 329576
-    - path: ../../data/raw/tmax_homo.csv
+    - path: data/raw/aemet/tmax_homo.csv
       hash: md5
       md5: a060b17a4612fbe3102543d70917dbbe
       size: 163518858
   download_gmst:
-    cmd: python ../../st_evt/_src/modules/download/gmst.py --filepath '../../data/raw'
+    cmd: python st_evt/_src/modules/download/gmst.py --filepath 'data/raw/gmst'
     deps:
-    - path: ../../st_evt/_src/modules/download/gmst.py
+    - path: st_evt/_src/modules/download/gmst.py
       hash: md5
       md5: 77def09a1b24facca2bfb5d2aeb7d643
       size: 1293
     params:
       params.yaml:
-        filepaths.raw_path: ../../data/raw
+        filepaths.raw_path: data/raw
     outs:
-    - path: ../../data/raw/gmst_david.xlsx
+    - path: data/raw/gmst/gmst_david.xlsx
       hash: md5
       md5: df907741d68510267e980d1ebf3fcdb5
       size: 35564

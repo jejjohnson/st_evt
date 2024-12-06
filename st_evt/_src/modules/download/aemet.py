@@ -41,45 +41,45 @@ def download_aemet_data(filepath: str="data/raw/"):
     The function logs the progress of the downloads, including the start and end of the script, 
     and the file paths where the data is saved.
     """
-    logger.info(f"Starting Script")
+    logger.info(f"Starting Script...!")
     
-    logger.info(f"DOWNLOADING 4 T2MAX...")
+    logger.info(f"DOWNLOADING AEMET Data - 2m Max Temperature...")
     
     full_path = Path(filepath).joinpath(T2MAX_DATA_NAME)
-    logger.debug(f"FilePath: {full_path}")
+    logger.debug(f"FilePath: {full_path.resolve()}")
     
     url = f"https://drive.google.com/uc?id={TMAX_DATA_CSV_LINK}"
     gdown.download(url, str(full_path))
     logger.info(f"Downloaded {T2MAX_DATA_NAME} from {url}")
     
-    logger.info(f"DOWNLOADING 4 PR...")
+    logger.info(f"Downloading AEMET Data - Precipitation...")
     
     full_path = Path(filepath).joinpath(PR_DATA_NAME)
-    logger.debug(f"FilePath: {full_path}")
+    logger.debug(f"FilePath: {full_path.resolve()}")
     
     url = f"https://drive.google.com/uc?id={PR_DATA_CSV_LINK}"
     gdown.download(url, str(full_path))
     logger.info(f"Downloaded {PR_DATA_NAME} from {url}")
     
-    logger.info(f"DOWNLOADING 4 STATIONS...")
+    logger.info(f"DOWNLOADING AEMET Data - Station Metadata...")
     
     full_path = Path(filepath).joinpath(STATIONS_CSV_NAME)
-    logger.debug(f"FilePath: {full_path}")
+    logger.debug(f"FilePath: {full_path.resolve()}")
     
     url = f"https://drive.google.com/uc?id={STATIONS_CSV_ID}"
     gdown.download(url, str(full_path))
     logger.info(f"Downloaded {STATIONS_CSV_NAME} from {url}")
     
-    logger.info(f"DOWNLOADING 4 STATIONS...")
+    logger.info(f"DOWNLOADING AEMET Data - Red Feten Stations...")
     
     full_path = Path(filepath).joinpath(RED_FETEN_CSV_NAME)
-    logger.debug(f"FilePath: {full_path}")
+    logger.debug(f"FilePath: {full_path.resolve()}")
     
     url = f"https://drive.google.com/uc?id={RED_FETEN_CSV_ID}"
     gdown.download(url, str(full_path))
     logger.info(f"Downloaded {RED_FETEN_CSV_NAME} from {url}")
     
-    logger.info(f"Finished script...")
+    logger.info(f"Finished script...!")
 
 
 
