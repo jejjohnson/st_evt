@@ -28,8 +28,8 @@ stages:
       size: 5574775
   aemet_stations_mcmc_evaluate:
     cmd: python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py evaluate-model-station
-      --load-path '../../../data/ml_results/aemet/3129A/nonstationary/linear' --save-path
-      '../../../data/ml_results/aemet/3129A/nonstationary/linear/figures'
+      --load-path '../../../data/ml_results/aemet/8414A/nonstationary/linear' --save-path
+      '../../../data/ml_results/aemet/8414A/nonstationary/linear/figures'
     deps:
     - path: ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
       hash: md5
@@ -37,24 +37,24 @@ stages:
       size: 9712
     params:
       params.yaml:
-        eda.station_id: 3129A
+        eda.station_id: 8414A
         filepaths.ml_ready_path: ../../../data/ml_ready
         filepaths.ml_results_path: ../../../data/ml_results
         model.model_type: linear
     outs:
     - path: 
-        ../../../data/ml_results/aemet/3129A/nonstationary/linear/figures/params_joint.png
+        ../../../data/ml_results/aemet/8414A/nonstationary/linear/figures/params_joint.png
       hash: md5
-      md5: 4702062f210debc53c3d8f77a471b618
-      size: 721709
-    - path: ../../../data/ml_results/aemet/3129A/nonstationary/linear/figures/trace.png
+      md5: 16da7f83de3460a0f9329b6f50f468da
+      size: 733549
+    - path: ../../../data/ml_results/aemet/8414A/nonstationary/linear/figures/trace.png
       hash: md5
-      md5: bf62a327183efb7272f31f19ad62a152
-      size: 1164278
+      md5: a35e95b305c1700eec8149d3e7fdaf0e
+      size: 1158805
   aemet_stations_mcmc_train:
     cmd: python ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py train-model-station
-      --load-path '../../../data/ml_ready' --save-path '../../../data/ml_results/aemet/3129A/nonstationary/linear'
-      --station-id '3129A'
+      --load-path '../../../data/ml_ready' --save-path '../../../data/ml_results/aemet/8414A/nonstationary/linear'
+      --station-id '8414A'
     deps:
     - path: ../../../st_evt/_src/modules/models/ts_nonstationary/aemet.py
       hash: md5
@@ -62,18 +62,18 @@ stages:
       size: 9712
     params:
       params.yaml:
-        eda.station_id: 3129A
+        eda.station_id: 8414A
         filepaths.ml_ready_path: ../../../data/ml_ready
         filepaths.ml_results_path: ../../../data/ml_results
         model.model_type: linear
     outs:
-    - path: ../../../data/ml_results/aemet/3129A/nonstationary/linear/az_nonstationary.zarr
+    - path: ../../../data/ml_results/aemet/8414A/nonstationary/linear/az_nonstationary.zarr
       hash: md5
-      md5: b6c2d5b88ca7e3701a1375d6446151d6.dir
-      size: 4808293
+      md5: 26398969b818cb32d95c97526f7d26fe.dir
+      size: 4927404
       nfiles: 140
     - path: 
-        ../../../data/ml_results/aemet/3129A/nonstationary/linear/az_posterior_params.json
+        ../../../data/ml_results/aemet/8414A/nonstationary/linear/az_posterior_params.json
       hash: md5
-      md5: 673265aef5b0a90884da0af183e33d10
-      size: 5575342
+      md5: 8d520e5e9434eec94d1e416547760ccc
+      size: 5574775

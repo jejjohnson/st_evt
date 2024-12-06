@@ -1,7 +1,7 @@
 ---
-title: Tutorials
+title: Pipelines & Experiments
 subject: Tutorials
-short_title: Overview
+short_title: Pipelines
 authors:
   - name: J. Emmanuel Johnson
     affiliations:
@@ -15,40 +15,22 @@ keywords: notation
 ---
 
 
-## Datasets
-
-* AEMET
-* E-OBS
-* ERA5
-
----
-## Extremes
+We have a few easy-to-use tools for users to get started right away.
 
 
----
-## Time Series
-
-
----
-## Spatial Fields
-
-
----
-## Spatiotemporal Fields
-
-
----
-
-
----
-## Running Experiments
-
-
-### I: Data
+## Data
 
 First, we need to download some data.
+To download data, we have some already done scripts that enable users to download data right away.
+
+```bash
+# Download Everything
+dvc repro pipelines/download/dvc.yaml
+```
 
 **AEMET**
+
+These are the weather stations that are available for the entire region in Spain.
 
 ```bash
 # Download Everything
@@ -56,7 +38,7 @@ dvc repro pipelines/download/dvc.yaml
 # Download Specifics
 dvc repro pipelines/download/dvc.yaml:download_aemet
 dvc repro pipelines/download/dvc.yaml:download_gmst
-dvc exp run pipelines/viz/dvc.yaml:viz_station_t2max --set-param eda.station_id='3129A' --downstream --force
+
 ```
 
 **GMST**
@@ -120,6 +102,7 @@ The first is EDA.
 **STATIONS**
 
 ```bash
+dvc exp run pipelines/viz/dvc.yaml:viz_station_t2max --set-param eda.station_id='3129A' --downstream --force
 python st_evt/_src/modules/eda/aemet_station.py viz-t2max-station --load-path "data/clean" --save-path="/home/juanjohn/pool_data/dynev4eo/figures" --station-id='3129A'
 ```
 

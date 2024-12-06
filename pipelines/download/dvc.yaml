@@ -1,3 +1,6 @@
+# TODO: Download E-OBS Data - 2m Max Temperature
+# TODO: Download E-OBS Data - Precipitation
+# TODO: Download E-OBS Data - Wind Speed
 stages:
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
   download_aemet:
@@ -20,57 +23,3 @@ stages:
     - ../../st_evt/_src/modules/download/gmst.py
    outs:
      - ../../data/raw/gmst_david.xlsx
-  # # CLEAN AEMET STATION DATA - 2m Max Temperature
-  # clean_t2max:
-  #  cmd: python st_evt/_src/modules/clean/aemet.py clean-t2m-stations --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-  #  params:
-  #    - filepaths.raw_path
-  #    - filepaths.clean_path
-  #  deps:
-  #    - data/raw/tmax_homo.csv
-  #    - data/raw/spain_stations.csv
-  #    - data/raw/red_feten.csv
-  #  outs:
-  #    - data/clean/t2max_stations.zarr
-  # # CLEAN AEMET STATION DATA - Precipitation
-  # clean_pr:
-  #  cmd: python st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-  #  params:
-  #    - filepaths.raw_path
-  #    - filepaths.clean_path
-  #  deps:
-  #    - data/raw/pr.csv
-  #    - data/raw/spain_stations.csv
-  #    - data/raw/red_feten.csv
-  #  outs:
-  #    - data/clean/pr_stations.zarr
-  # # CLEAN AEMET STATION DATA - 2m Max Temperature
-  # clean_gmst_david:
-  #  cmd: python st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-  #  params:
-  #    - filepaths.raw_path
-  #    - filepaths.clean_path
-  #  deps:
-  #    - data/raw/gmst_david.xlsx
-  #  outs:
-  #    - data/clean/gmst_david.zarr
-  # # VIZ - STATION - T2MAX
-  # viz_station_t2max:
-  #   cmd: |
-  #     python st_evt/_src/modules/eda/aemet_station.py viz-t2max-station --load-path '${filepaths.clean_path}' --save-path '${filepaths.viz_eda_path}' --station-id '${eda.station_id}'
-  #   params:
-  #     - filepaths.clean_path
-  #     - filepaths.viz_eda_path
-  #     - eda.station_id
-  #   deps:
-  #     - data/clean/t2max_stations.zarr
-  # # VIZ - STATION - PRECIPITATION
-  # viz_station_pr:
-  #   cmd: |
-  #     python st_evt/_src/modules/eda/aemet_station.py viz-pr-station --load-path '${filepaths.clean_path}' --save-path '${filepaths.viz_eda_path}' --station-id '${eda.station_id}'
-  #   params:
-  #     - filepaths.clean_path
-  #     - filepaths.viz_eda_path
-  #     - eda.station_id
-  #   deps:
-  #     - data/clean/pr_stations.zarr

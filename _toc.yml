@@ -26,6 +26,7 @@ chapters:
   - title: Tutorials
     sections:
       - file: notes/tutorials.md
+      - file: notes/pipelines.md
       - title: Extremes
         sections:
           - file: notebooks/bm_extremes/aemet/1.1.1_bm_extremes_t2max_eda
