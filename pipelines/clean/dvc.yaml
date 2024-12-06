@@ -1,35 +1,38 @@
 stages:
   # CLEAN AEMET STATION DATA - 2m Max Temperature
-  clean_t2max:
-   cmd: python ../../st_evt/_src/modules/clean/aemet.py clean-t2m-stations --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-   params:
+  clean_aemet_t2max:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/aemet.py clean-t2m-stations --load-path '${filepaths.raw_path}/aemet' --save-path '${filepaths.clean_path}/aemet'
+    params:
      - filepaths.raw_path
      - filepaths.clean_path
-   deps:
-     - ../../data/raw/tmax_homo.csv
-     - ../../data/raw/spain_stations.csv
-     - ../../data/raw/red_feten.csv
-   outs:
-     - ../../data/clean/t2max_stations.zarr
+    deps:
+     - data/raw/aemet/tmax_homo.csv
+     - data/raw/aemet/spain_stations.csv
+     - data/raw/aemet/red_feten.csv
+    outs:
+     - data/clean/aemet/t2max_stations.zarr
   # CLEAN AEMET STATION DATA - Precipitation
-  clean_pr:
-   cmd: python ../../st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-   params:
+  clean_aemet_pr:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path '${filepaths.raw_path}/aemet' --save-path '${filepaths.clean_path}/aemet'
+    params:
      - filepaths.raw_path
      - filepaths.clean_path
-   deps:
-     - ../../data/raw/pr.csv
-     - ../../data/raw/spain_stations.csv
-     - ../../data/raw/red_feten.csv
-   outs:
-     - ../../data/clean/pr_stations.zarr
+    deps:
+     - data/raw/aemet/pr.csv
+     - data/raw/aemet/spain_stations.csv
+     - data/raw/aemet/red_feten.csv
+    outs:
+     - data/clean/aemet/pr_stations.zarr
   # CLEAN AEMET STATION DATA - 2m Max Temperature
   clean_gmst_david:
-   cmd: python ../../st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path '${filepaths.raw_path}' --save-path '${filepaths.clean_path}'
-   params:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path '${filepaths.raw_path}/gmst' --save-path '${filepaths.clean_path}/gmst'
+    params:
      - filepaths.raw_path
      - filepaths.clean_path
-   deps:
-     - ../../data/raw/gmst_david.xlsx
-   outs:
-     - ../../data/clean/gmst_david.zarr
+    deps:
+     - data/raw/gmst/gmst_david.xlsx
+    outs:
+     - data/clean/gmst/gmst_david.zarr

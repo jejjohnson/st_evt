@@ -18,7 +18,7 @@ def clean_pr_stations(
     load_path: str="data/raw/",
     save_path: str="data/clean/",
     ):
-    logger.info(f"Starting script...")
+    logger.info(f"Starting script...!")
 
     logger.info(f"Sorting out paths...")
     load_path = Path(load_path)
@@ -26,9 +26,9 @@ def clean_pr_stations(
     pr_dataset = load_path.joinpath("pr.csv")
     red_feten = load_path.joinpath("red_feten.csv")
     
-    logger.debug(f"Stations Path: {stations}")
-    logger.debug(f"Data Path: {pr_dataset}")
-    logger.debug(f"Stations Path: {red_feten}")
+    logger.debug(f"Stations Path: {stations.resolve()}")
+    logger.debug(f"Data Path: {pr_dataset.resolve()}")
+    logger.debug(f"Stations Path: {red_feten.resolve()}")
 
     logger.info(f"Loading station coordinates...")
     df_coords = pd.read_csv(stations, delimiter=";", index_col=0, decimal=",")
@@ -46,7 +46,6 @@ def clean_pr_stations(
     )
 
     logger.info(f"Creating xarray datastructure...")
-    xr_datasets = xr.Dataset()
     pbar = tqdm(df_all.columns, leave=False)
     for iname in pbar:
 
@@ -127,7 +126,7 @@ def clean_pr_stations(
     
     full_save_path = Path(save_path).joinpath("pr_stations.zarr")
 
-    logger.debug(f"Saving to {full_save_path}")
+    logger.debug(f"Saving to {full_save_path.resolve()}")
     # assert full_save_path.parent.is_dir()
 
     ds_pr.to_zarr(full_save_path, mode="w")
@@ -148,9 +147,9 @@ def clean_t2m_stations(
     pr_dataset = load_path.joinpath("tmax_homo.csv")
     red_feten = load_path.joinpath("red_feten.csv")
     
-    logger.debug(f"Stations Path: {stations}")
-    logger.debug(f"Data Path: {pr_dataset}")
-    logger.debug(f"Stations Path: {red_feten}")
+    logger.debug(f"Stations Path: {stations.resolve()}")
+    logger.debug(f"Data Path: {pr_dataset.resolve()}")
+    logger.debug(f"Stations Path: {red_feten.resolve()}")
 
     logger.info(f"Loading station coordinates...")
     df_coords = pd.read_csv(stations, delimiter=";", index_col=0, decimal=",")
@@ -251,7 +250,7 @@ def clean_t2m_stations(
     
     full_save_path = Path(save_path).joinpath("t2max_stations.zarr")
 
-    logger.debug(f"Saving to {full_save_path}")
+    logger.debug(f"Saving to {full_save_path.resolve()}")
     # assert full_save_path.parent.is_dir()
 
     ds_pr.to_zarr(full_save_path, mode="w")

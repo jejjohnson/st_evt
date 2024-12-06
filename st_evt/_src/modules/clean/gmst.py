@@ -30,7 +30,7 @@ def clean_gmst_david(
     logger.info(f"Sorting out paths...")
     load_path = Path(load_path)
     file_name = load_path.joinpath("gmst_david.xlsx")
-    logger.debug(f"File: {file_name}")
+    logger.debug(f"File: {file_name.resolve()}")
     
     # read the file
     raw_df = pd.read_excel(file_name)
@@ -60,7 +60,7 @@ def clean_gmst_david(
     
     full_save_path = Path(save_path).joinpath("gmst_david.zarr")
     
-    logger.debug(f"Saving to {full_save_path}")
+    logger.debug(f"Saving to {full_save_path.resolve()}")
     
     gmst_xrds.to_zarr(full_save_path)
         
