@@ -18,3 +18,11 @@ stages:
      - ${raw_path}/aemet/pr.csv
      - ${raw_path}/aemet/spain_stations.csv
      - ${raw_path}/aemet/red_feten.csv
+  # DOWNLOAD AEMET STATION DATA FROM GDRIVE
+  download_gmst:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/download/gmst.py --filepath '${raw_path}/gmst'
+    deps:
+     - st_evt/_src/modules/download/gmst.py
+    outs:
+     - ${raw_path}/gmst/gmst_david.xlsx

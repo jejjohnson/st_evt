@@ -24,3 +24,15 @@ stages:
       hash: md5
       md5: a060b17a4612fbe3102543d70917dbbe
       size: 163518858
+  download_gmst:
+    cmd: python st_evt/_src/modules/download/gmst.py --filepath 'data/raw/gmst'
+    deps:
+    - path: st_evt/_src/modules/download/gmst.py
+      hash: md5
+      md5: 77def09a1b24facca2bfb5d2aeb7d643
+      size: 1293
+    outs:
+    - path: data/raw/gmst/gmst_david.xlsx
+      hash: md5
+      md5: df907741d68510267e980d1ebf3fcdb5
+      size: 35564
