@@ -1,0 +1,21 @@
+vars:
+  - clean_path: data/clean
+  - ml_ready_path: data/ml_ready
+  - summer_months: '6,7,8'
+stages:
+  # DOWNLOAD AEMET STATION DATA FROM GDRIVE
+  aemet_bm_summer_extremes:
+    wdir: ./../../
+    cmd: >-
+      python st_evt/_src/modules/extremes/aemet.py aemet-t2m-bm-year
+      --data-path '${clean_path}/aemet'
+      --cov-path '${clean_path}/gmst'
+      --save-path '${ml_ready_path}/aemet'
+      --output-name 't2max_stations_bm_summer'
+      --months ${summer_months}
+    deps:
+     - st_evt/_src/modules/extremes/aemet.py
+     - ${clean_path}/gmst/gmst_david.zarr
+     - ${clean_path}/aemet/t2max_stations.zarr
+    outs:
+     - ${ml_ready_path}/aemet/t2max_stations_bm_summer.zarr
