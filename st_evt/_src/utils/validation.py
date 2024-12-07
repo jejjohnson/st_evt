@@ -4,6 +4,24 @@ import pint_xarray
 from metpy.units import units
 
 
+def contains_nan(dictionary):
+    """
+    Check if any values in the dictionary are NaNs.
+
+    Args:
+        dictionary (dict): The dictionary to check.
+
+    Returns:
+        bool: True if any values are NaNs, False otherwise.
+    """
+    for value in dictionary.values():
+        if isinstance(value, (float, np.floating)) and np.isnan(value):
+            return True
+        elif isinstance(value, np.ndarray) and np.isnan(value).any():
+            return True
+    return False
+
+
 def transform_360_to_180(coord: np.ndarray) -> np.ndarray:
     """
     This function converts the coordinates that are bounded from [-180, 180]

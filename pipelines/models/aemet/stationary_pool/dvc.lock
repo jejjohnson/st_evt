@@ -1,0 +1,27 @@
+schema: '2.0'
+stages:
+  aemet_stations_mcmc_train:
+    cmd: python st_evt/_src/modules/models/aemet/st_gevd_stationary_iid.py train-model-gevd-mcmc
+      --dataset-path 'data/ml_ready/aemet/t2max_stations_bm_summer.zarr' --save-path
+      'data/ml_results/aemet/t2max/gevd_stationary_iid/mcmc/' --variable 't2max_bm_year'
+      --covariate 'gmst' --num-mcmc-samples 10 --num-chains 1 --num-mcmc-warmup 10
+      --num-map-warmup 10
+    deps:
+    - path: data/ml_ready/aemet/t2max_stations_bm_summer.zarr
+      hash: md5
+      md5: a18045cb702634b449bc05c867b9195c.dir
+      size: 172304
+      nfiles: 36
+    - path: st_evt/_src/modules/models/aemet/st_gevd_stationary_iid.py
+      hash: md5
+      md5: 6db86670fd53cc4d94622bb859474681
+      size: 5738
+    outs:
+    - path: data/ml_results/aemet/t2max/gevd_stationary_iid/mcmc/az_nonstationary.zarr
+      hash: md5
+      md5: 6573d6f71019c01b0a4817aa2bcc5fe2
+      size: 553703
+    - path: data/ml_results/aemet/t2max/gevd_stationary_iid/mcmc/az_posterior_params.yaml
+      hash: md5
+      md5: 3edff50527b9b9b5e7474c498b017b6c
+      size: 106405

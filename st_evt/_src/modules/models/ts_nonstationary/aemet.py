@@ -314,7 +314,7 @@ def evaluate_model_station(
     plt.gcf().set_dpi(300)
     plt.tight_layout()
     plt.savefig(figures_path.joinpath("trace.png"))
-    plt.show()
+    plt.close()
     
     logger.info("Plotting Parameter Joint Plot")
     fig = az.plot_pair(
@@ -331,7 +331,7 @@ def evaluate_model_station(
     plt.tight_layout()
     plt.gcf().set_dpi(300)
     plt.savefig(figures_path.joinpath("params_joint.png"))
-    plt.show()
+    plt.close()
 
 
 
