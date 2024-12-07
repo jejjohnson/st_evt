@@ -1,4 +1,2 @@
 [core]
-    remote = local
-['remote "local"']
-    url = /home/juanjohn/pool_data/dynev4eo/db_dvc
+    no_scm = True
