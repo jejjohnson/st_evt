@@ -1,4 +1,0 @@
-[core]
-    remote = local
-['remote "local"']
-    url = /pool/usuarios/juanjohn/data/dynev4eo/dvc_db
