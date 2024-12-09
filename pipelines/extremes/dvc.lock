@@ -7,8 +7,8 @@ stages:
     deps:
     - path: data/clean/aemet/t2max_stations.zarr
       hash: md5
-      md5: 350e1783160470fc4c0e3c980932200e.dir
-      size: 37185955
+      md5: e758a49edc2fe8f36ad6a3444b313140.dir
+      size: 37185951
       nfiles: 90
     - path: data/clean/gmst/gmst_david.zarr
       hash: md5
@@ -17,11 +17,63 @@ stages:
       nfiles: 27
     - path: st_evt/_src/modules/extremes/aemet.py
       hash: md5
-      md5: 15a32931a9c6084c16329bdcbff01a74
-      size: 2734
+      md5: 5ec87b6853798436aa6ac65c58a6b09d
+      size: 4479
     outs:
     - path: data/ml_ready/aemet/t2max_stations_bm_summer.zarr
       hash: md5
-      md5: a18045cb702634b449bc05c867b9195c.dir
-      size: 172304
-      nfiles: 36
+      md5: 3956587251376c26b358ac9b11820d7f.dir
+      size: 169972
+      nfiles: 30
+  aemet_t2m_bm_summer_extremes:
+    cmd: python st_evt/_src/modules/extremes/aemet.py aemet-t2m-bm-year --data-path
+      'data/clean/aemet/t2max_stations.zarr' --cov-path 'data/clean/gmst/gmst_david.zarr'
+      --save-path 'data/ml_ready/aemet' --output-name 't2max_stations_bm_summer' --months
+      6,7,8
+    deps:
+    - path: data/clean/aemet/t2max_stations.zarr
+      hash: md5
+      md5: e758a49edc2fe8f36ad6a3444b313140.dir
+      size: 37185951
+      nfiles: 90
+    - path: data/clean/gmst/gmst_david.zarr
+      hash: md5
+      md5: fb56def1a9f5b148461f942f7024cec7.dir
+      size: 18611
+      nfiles: 27
+    - path: st_evt/_src/modules/extremes/aemet.py
+      hash: md5
+      md5: bc69424a9b9692bbc83df21c47f2c497
+      size: 4362
+    outs:
+    - path: data/ml_ready/aemet/t2max_stations_bm_summer.zarr
+      hash: md5
+      md5: 3956587251376c26b358ac9b11820d7f.dir
+      size: 169972
+      nfiles: 30
+  aemet_pr_bm_fall_extremes:
+    cmd: python st_evt/_src/modules/extremes/aemet.py aemet-pr-bm-year --data-path
+      'data/clean/aemet/pr_stations.zarr' --cov-path 'data/clean/gmst/gmst_david.zarr'
+      --save-path 'data/ml_ready/aemet' --output-name 'pr_stations_bm_fall' --months
+      9,10,11
+    deps:
+    - path: data/clean/aemet/pr_stations.zarr
+      hash: md5
+      md5: 6df26e7fa86c700669c0d62ca702c626.dir
+      size: 36113230
+      nfiles: 154
+    - path: data/clean/gmst/gmst_david.zarr
+      hash: md5
+      md5: fb56def1a9f5b148461f942f7024cec7.dir
+      size: 18611
+      nfiles: 27
+    - path: st_evt/_src/modules/extremes/aemet.py
+      hash: md5
+      md5: bc69424a9b9692bbc83df21c47f2c497
+      size: 4362
+    outs:
+    - path: data/ml_ready/aemet/pr_stations_bm_fall.zarr
+      hash: md5
+      md5: b92a904db60f4ba0ca7e28748dd76eca.dir
+      size: 268719
+      nfiles: 31

@@ -2,14 +2,15 @@ vars:
   - clean_path: data/clean
   - ml_ready_path: data/ml_ready
   - summer_months: '6,7,8'
+  - fall_months: '9,10,11'
 stages:
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
-  aemet_bm_summer_extremes:
+  aemet_t2m_bm_summer_extremes:
     wdir: ./../../
     cmd: >-
       python st_evt/_src/modules/extremes/aemet.py aemet-t2m-bm-year
-      --data-path '${clean_path}/aemet'
-      --cov-path '${clean_path}/gmst'
+      --data-path '${clean_path}/aemet/t2max_stations.zarr'
+      --cov-path '${clean_path}/gmst/gmst_david.zarr'
       --save-path '${ml_ready_path}/aemet'
       --output-name 't2max_stations_bm_summer'
       --months ${summer_months}
@@ -19,3 +20,18 @@ stages:
      - ${clean_path}/aemet/t2max_stations.zarr
     outs:
      - ${ml_ready_path}/aemet/t2max_stations_bm_summer.zarr
+  aemet_pr_bm_fall_extremes:
+    wdir: ./../../
+    cmd: >-
+      python st_evt/_src/modules/extremes/aemet.py aemet-pr-bm-year
+      --data-path '${clean_path}/aemet/pr_stations.zarr'
+      --cov-path '${clean_path}/gmst/gmst_david.zarr'
+      --save-path '${ml_ready_path}/aemet'
+      --output-name 'pr_stations_bm_fall'
+      --months ${fall_months}
+    deps:
+     - st_evt/_src/modules/extremes/aemet.py
+     - ${clean_path}/gmst/gmst_david.zarr
+     - ${clean_path}/aemet/pr_stations.zarr
+    outs:
+     - ${ml_ready_path}/aemet/pr_stations_bm_fall.zarr

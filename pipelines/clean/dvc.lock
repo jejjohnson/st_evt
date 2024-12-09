@@ -19,8 +19,8 @@ stages:
     outs:
     - path: data/clean/aemet/t2max_stations.zarr
       hash: md5
-      md5: 350e1783160470fc4c0e3c980932200e.dir
-      size: 37185955
+      md5: e758a49edc2fe8f36ad6a3444b313140.dir
+      size: 37185951
       nfiles: 90
   clean_aemet_pr:
     cmd: python st_evt/_src/modules/clean/aemet.py clean-pr-stations --load-path 'data/raw/aemet'
@@ -41,8 +41,8 @@ stages:
     outs:
     - path: data/clean/aemet/pr_stations.zarr
       hash: md5
-      md5: 2bd1cd110614f8de394870e156edcf28.dir
-      size: 36046756
+      md5: 6df26e7fa86c700669c0d62ca702c626.dir
+      size: 36113230
       nfiles: 154
   clean_gmst_david:
     cmd: python st_evt/_src/modules/clean/gmst.py clean-gmst-david --load-path 'data/raw/gmst'

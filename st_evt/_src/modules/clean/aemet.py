@@ -32,9 +32,19 @@ def clean_pr_stations(
 
     logger.info(f"Loading station coordinates...")
     df_coords = pd.read_csv(stations, delimiter=";", index_col=0, decimal=",")
+        
+    logger.debug("Checking Coords shapes...")
+    assert df_coords.shape == (5238, 5)
+    logger.debug(f"Shape: {df_coords.shape}")
+    logger.debug("Checking Column names...")
+    columns = ["name", "alt", 'lon', "lat", "prov"]
+    assert set(columns).issubset(df_coords.columns)
 
     logger.info(f"Loading precipitation values...")
-    df_all = pd.read_csv(pr_dataset, index_col=0)
+    df_precip = pd.read_csv(pr_dataset, index_col=0)
+    
+    logger.info("Checking Coords shapes...")
+    assert df_precip.shape == (22_645, 2_448)
 
     coordinates = dict(
         station_id=list(),
@@ -46,11 +56,11 @@ def clean_pr_stations(
     )
 
     logger.info(f"Creating xarray datastructure...")
-    pbar = tqdm(df_all.columns, leave=False)
+    pbar = tqdm(df_precip.columns, leave=False)
     for iname in pbar:
 
         try:
-            ids = df_all[str(iname)]
+            ids = df_precip[str(iname)]
             icoords = df_coords.loc[str(iname)]
             # extract coordinates
             coordinates["station_id"].append(str(icoords.name))
@@ -68,11 +78,12 @@ def clean_pr_stations(
             "lon": (("station_id"), coordinates['lon']),
             "lat": (("station_id"), coordinates['lat']),
             "alt": (("station_id"), coordinates['alt']),
-            "station_name": (("station_id"), coordinates['station_name']),
+            
         },
         coords={
             "station_id": coordinates["station_id"],
-            "time": pd.to_datetime(df_all.index.values)
+            "station_name": (("station_id"), coordinates['station_name']),
+            "time": pd.date_range(start="1961-01-01", end="2022-12-31", freq="D")
         }
     )
 
@@ -151,7 +162,7 @@ def clean_t2m_stations(
     df_coords = pd.read_csv(stations, delimiter=";", index_col=0, decimal=",")
 
     logger.info(f"Loading max temperature values...")
-    df_all = pd.read_csv(pr_dataset, index_col=0)
+    df_precip = pd.read_csv(pr_dataset, index_col=0)
 
     coordinates = dict(
         station_id=list(),
@@ -163,13 +174,13 @@ def clean_t2m_stations(
     )
 
     logger.info(f"Creating xarray datastructure...")
-    pbar = tqdm(df_all.columns, leave=False)
+    pbar = tqdm(df_precip.columns, leave=False)
     for iname in pbar:
 
         
 
         try:
-            ids = df_all[str(iname)]
+            ids = df_precip[str(iname)]
             icoords = df_coords.loc[str(iname)]
             # extract coordinates
             coordinates["station_id"].append(str(icoords.name))
@@ -183,7 +194,7 @@ def clean_t2m_stations(
 
     ds_pr = xr.Dataset(
         {
-            "t2m_max": (("station_id", "time"), coordinates['values']),
+            "t2max": (("station_id", "time"), coordinates['values']),
             "lon": (("station_id"), coordinates['lon']),
             "lat": (("station_id"), coordinates['lat']),
             "alt": (("station_id"), coordinates['alt']),
@@ -191,7 +202,7 @@ def clean_t2m_stations(
         },
         coords={
             "station_id": coordinates["station_id"],
-            "time": pd.to_datetime(df_all.index.values)
+            "time": pd.to_datetime(df_precip.index.values)
         }
     )
 
@@ -206,15 +217,15 @@ def clean_t2m_stations(
 
     ds_pr = ds_pr.sortby("time")
 
-    ds_pr["t2m_max"].attrs["standard_name"] = "2m_temperature_max"
-    ds_pr["t2m_max"].attrs["long_name"] = "2m Temperature Max"
+    ds_pr["t2max"].attrs["standard_name"] = "2m_temperature_max"
+    ds_pr["t2max"].attrs["long_name"] = "2m Temperature Max"
 
     ds_pr["alt"].attrs["standard_name"] = "altitude"
     ds_pr["alt"].attrs["long_name"] = "Altitude"
 
     logger.info(f"Validating All Units...")
     ds_pr = ds_pr.pint.quantify(
-        {"t2m_max": "degC", 
+        {"t2max": "degC", 
         "lon": units.degrees_east,
         "lat": units.degrees_north,
         "alt": "meters"
