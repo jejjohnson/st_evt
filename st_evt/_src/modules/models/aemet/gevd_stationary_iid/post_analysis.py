@@ -582,7 +582,7 @@ def plot_covariates(ds, parameter: str="scale", cbar_label="", save_path: str=""
     
     # LONGITUDE
     fig, ax = plt.subplots()
-    isub_mainland.to_dataset().plot.scatter(ax=ax,  x=parameter, y="lon", s=10.0, color="black")
+    isub_mainland.to_dataset().plot.scatter(ax=ax,  x=parameter, y="alt", s=10.0, color="black")
     ax.set(
         xlabel=cbar_label
     )

@@ -3,6 +3,8 @@ vars:
   - ml_ready_path: data/ml_ready
   - summer_months: '6,7,8'
   - fall_months: '9,10,11'
+  - viz_path: data/viz
+  - dataset: aemet
 stages:
   # DOWNLOAD AEMET STATION DATA FROM GDRIVE
   aemet_t2m_bm_summer_extremes:
@@ -20,6 +22,18 @@ stages:
      - ${clean_path}/aemet/t2max_stations.zarr
     outs:
      - ${ml_ready_path}/aemet/t2max_stations_bm_summer.zarr
+  viz_aemet_t2max_bm:
+    wdir: ./../../
+    cmd: >-
+      python st_evt/_src/modules/viz/aemet/analysis.py eda-spain
+      --dataset-path '${ml_ready_path}/aemet/t2max_stations_bm_summer.zarr'
+      --save-path '${viz_path}/${dataset}/t2max/spain/eda/bm_summer/'
+      --variable "t2max"
+      --covariate "gmst"
+    deps:
+     - data/clean/aemet/t2max_stations.zarr
+    # outs:
+    #  - ${viz_path}/${dataset}/t2max/spain/eda/bm_summmer/t2max_mean/t2max_mean_map.png
   aemet_pr_bm_fall_extremes:
     wdir: ./../../
     cmd: >-
@@ -35,3 +49,15 @@ stages:
      - ${clean_path}/aemet/pr_stations.zarr
     outs:
      - ${ml_ready_path}/aemet/pr_stations_bm_fall.zarr
+  viz_aemet_pr_bm:
+    wdir: ./../../
+    cmd: >-
+      python st_evt/_src/modules/viz/aemet/analysis.py eda-spain
+      --dataset-path '${ml_ready_path}/aemet/pr_stations_bm_fall.zarr'
+      --save-path '${viz_path}/${dataset}/pr/spain/eda/bm_fall/'
+      --variable "pr"
+      --covariate "gmst"
+    deps:
+     - data/clean/aemet/pr_stations.zarr
+    # outs:
+    #  - ${viz_path}/${dataset}/pr/spain/eda/bm_fall/pr_mean/pr_mean_map.png

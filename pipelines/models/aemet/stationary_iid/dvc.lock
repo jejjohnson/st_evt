@@ -135,7 +135,7 @@ stages:
       size: 261908192
     - path: st_evt/_src/modules/models/aemet/gevd_stationary_iid/post_analysis.py
       hash: md5
-      md5: d4ed613c05ee2bc0d39f8e2a41cb414a
+      md5: 20cdb6cc19c81e08676c3491dbf09c8a
       size: 19895
     outs:
     - path: data/viz/aemet/t2max/8414A/gevd_stationary_iid/mcmc/metrics/mae_density.png
@@ -160,8 +160,8 @@ stages:
       size: 261310
     - path: data/viz/aemet/t2max/8414A/gevd_stationary_iid/mcmc/returns/rl100_density.png
       hash: md5
-      md5: e552a58c4845583277afc5f742de3611
-      size: 52401
+      md5: f718f7ce1091480ea5a10e780f5e6c0c
+      size: 72614
     - path: data/viz/aemet/t2max/8414A/gevd_stationary_iid/mcmc/returns/rp_vs_obs.png
       hash: md5
       md5: 7fc4fcbaaa00b0b0edad2fd77c746a4c
@@ -179,7 +179,7 @@ stages:
       size: 261908192
     - path: st_evt/_src/modules/models/aemet/gevd_stationary_iid/post_analysis.py
       hash: md5
-      md5: d4ed613c05ee2bc0d39f8e2a41cb414a
+      md5: 20cdb6cc19c81e08676c3491dbf09c8a
       size: 19895
     outs:
     - path: data/viz/aemet/t2max/3129A/gevd_stationary_iid/mcmc/metrics/mae_density.png
@@ -204,8 +204,8 @@ stages:
       size: 256513
     - path: data/viz/aemet/t2max/3129A/gevd_stationary_iid/mcmc/returns/rl100_density.png
       hash: md5
-      md5: d025499c2333204cdecefa18606457d3
-      size: 50713
+      md5: 159c8a759635da743c9275345539f032
+      size: 73682
     - path: data/viz/aemet/t2max/3129A/gevd_stationary_iid/mcmc/returns/rp_vs_obs.png
       hash: md5
       md5: 53fe3e72195d96907b10edc0b2fc32cf
@@ -222,7 +222,7 @@ stages:
       size: 253570216
     - path: st_evt/_src/modules/models/aemet/gevd_stationary_iid/post_analysis.py
       hash: md5
-      md5: d4ed613c05ee2bc0d39f8e2a41cb414a
+      md5: 20cdb6cc19c81e08676c3491dbf09c8a
       size: 19895
     outs:
     - path: data/viz/aemet/pr/8414A/gevd_stationary_iid/mcmc/metrics/mae_density.png
@@ -266,13 +266,13 @@ stages:
       size: 261908192
     - path: st_evt/_src/modules/models/aemet/gevd_stationary_iid/post_analysis.py
       hash: md5
-      md5: d4ed613c05ee2bc0d39f8e2a41cb414a
+      md5: 20cdb6cc19c81e08676c3491dbf09c8a
       size: 19895
     outs:
     - path: data/viz/aemet/t2max/spain/gevd_stationary_iid/mcmc/nll/nll_covariates_alt.png
       hash: md5
-      md5: be0284c58dd47e44afaac1ca64d18f7c
-      size: 38582
+      md5: 418a1418a3cd30233a6a1f590f2c1660
+      size: 36699
     - path: data/viz/aemet/t2max/spain/gevd_stationary_iid/mcmc/nll/nll_covariates_lat.png
       hash: md5
       md5: c3562c3ee5b0b66aabba4c80f67688da
@@ -301,13 +301,13 @@ stages:
       size: 253570216
     - path: st_evt/_src/modules/models/aemet/gevd_stationary_iid/post_analysis.py
       hash: md5
-      md5: d4ed613c05ee2bc0d39f8e2a41cb414a
+      md5: 20cdb6cc19c81e08676c3491dbf09c8a
       size: 19895
     outs:
     - path: data/viz/aemet/pr/spain/gevd_stationary_iid/mcmc/nll/nll_covariates_alt.png
       hash: md5
-      md5: 6286a38c45b4cead8891dfb07edb7edb
-      size: 39933
+      md5: 0648f4f6215ccabaa5fde1d45aa8276b
+      size: 43404
     - path: data/viz/aemet/pr/spain/gevd_stationary_iid/mcmc/nll/nll_covariates_lat.png
       hash: md5
       md5: 810413905afdab64f21aba31fabdb230

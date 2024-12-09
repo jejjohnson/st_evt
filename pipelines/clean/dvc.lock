@@ -58,3 +58,13 @@ stages:
       md5: fb56def1a9f5b148461f942f7024cec7.dir
       size: 18611
       nfiles: 27
+  viz_aemet_t2max:
+    cmd: python st_evt/_src/modules/viz/aemet/analysis.py eda-spain --dataset-path
+      'data/clean/aemet/t2max_stations.zarr' --save-path 'data/viz/aemet/t2max/spain/eda/'
+      --variable "t2max" --covariate "time"
+    deps:
+    - path: data/clean/aemet/t2max_stations.zarr
+      hash: md5
+      md5: e758a49edc2fe8f36ad6a3444b313140.dir
+      size: 37185951
+      nfiles: 90

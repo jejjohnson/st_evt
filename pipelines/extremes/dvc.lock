@@ -77,3 +77,23 @@ stages:
       md5: b92a904db60f4ba0ca7e28748dd76eca.dir
       size: 268719
       nfiles: 31
+  viz_aemet_t2max_bm:
+    cmd: python st_evt/_src/modules/viz/aemet/analysis.py eda-spain --dataset-path
+      'data/ml_ready/aemet/t2max_stations_bm_summer.zarr' --save-path 'data/viz/aemet/t2max/spain/eda/bm_summer/'
+      --variable "t2max" --covariate "gmst"
+    deps:
+    - path: data/clean/aemet/t2max_stations.zarr
+      hash: md5
+      md5: e758a49edc2fe8f36ad6a3444b313140.dir
+      size: 37185951
+      nfiles: 90
+  viz_aemet_pr_bm:
+    cmd: python st_evt/_src/modules/viz/aemet/analysis.py eda-spain --dataset-path
+      'data/ml_ready/aemet/pr_stations_bm_fall.zarr' --save-path 'data/viz/aemet/pr/spain/eda/bm_fall/'
+      --variable "pr" --covariate "gmst"
+    deps:
+    - path: data/clean/aemet/pr_stations.zarr
+      hash: md5
+      md5: 6df26e7fa86c700669c0d62ca702c626.dir
+      size: 36113230
+      nfiles: 154

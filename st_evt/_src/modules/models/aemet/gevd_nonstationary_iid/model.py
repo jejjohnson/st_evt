@@ -12,8 +12,9 @@ import multiprocessing
 from pathlib import Path
 import xarray as xr
 import numpy as np
+import jax.numpy as jnp
 from loguru import logger
-from st_evt._src.models.gevd import StationaryUnPooledGEVD
+from st_evt._src.models.gevd import NonStationaryUnPooledGEVD, CoupledExponentialUnPooledGEVD
 from st_evt.viz import (
     plot_scatter_ts,
     plot_histogram,
@@ -62,18 +63,25 @@ VARIABLE_LABEL = {
     "gmst": "Global Mean Surface Temperature [°C]"
 }
 
+
 def init_t2m_model(
+    t_values: Array,
     y_values: Array,
     spatial_dim_name: str = "space",
     time_dim_name: str = "time",
     variable_name: str = "obs"
-) -> StationaryUnPooledGEVD:
+) -> NonStationaryUnPooledGEVD:
     
-    # LOCATION PARAMETER
+    t0 = float(t_values.min())
+    
+    # Intercept Parameter
     loc_init = np.mean(y_values)
     scale_init = np.std(y_values)
     logger.debug(f"Initial Location: Normal({loc_init:.2f}, {scale_init:.2f})")
-    location_prior = dist.Normal(float(loc_init), float(scale_init))
+    intercept_prior = dist.Normal(float(loc_init), float(scale_init))
+    
+    # Slope Prior
+    slope_prior = dist.Normal(0.0, 1.0)
     
     # Scale Parameter is always positive
     loc_init = np.log(scale_init)
@@ -84,47 +92,54 @@ def init_t2m_model(
     concentration_prior = dist.TruncatedNormal(-0.3, 0.1, low=-1.0, high=-1e-5)
 
     # initialize model
-    return StationaryUnPooledGEVD(
-        location_prior=location_prior,
+    return NonStationaryUnPooledGEVD(
+        slope_prior=slope_prior,
+        intercept_prior=intercept_prior,
         scale_prior=scale_prior,
         concentration_prior=concentration_prior,
         spatial_dim_name=spatial_dim_name,
         time_dim_name=time_dim_name,
-        variable_name=variable_name
-        
+        variable_name=variable_name,
+        t0=t0,   
     )
 
 
 def init_pr_model(
+    t_values: Array,
     y_values: Array,
     spatial_dim_name: str = "space",
     time_dim_name: str = "time",
     variable_name: str = "obs"
-) -> StationaryUnPooledGEVD:
+) -> CoupledExponentialUnPooledGEVD:
+    
+    t0 = float(t_values.min())
     
     # LOCATION PARAMETER
     loc_log_init = np.log(np.mean(y_values))
     scale_log_init = np.log(np.std(y_values))
     logger.debug(f"Initial Location: Normal({loc_log_init:.2f}, {scale_log_init:.2f})")
-    location_prior = dist.LogNormal(float(loc_log_init), float(scale_log_init))
+    loc_intercept_prior = dist.LogNormal(float(loc_log_init), float(scale_log_init))
+    slope_prior = dist.Normal(0.0, 1.0)
     
     # Scale Parameter is always positive
     loc_init = scale_log_init
     logger.debug(f"Initial Scale: LogNormal({loc_init:.2f}, 0.5)")
-    scale_prior = dist.LogNormal(loc_init, 0.5)
+    scale_intercept_prior = dist.LogNormal(loc_init, 0.5)
     
     # TEMPERATURE has a negative shape
     concentration_prior = dist.TruncatedNormal(0.3, 0.1, low=1e-5, high=1.0)
 
     # initialize model
-    return StationaryUnPooledGEVD(
-        location_prior=location_prior,
-        scale_prior=scale_prior,
+    return CoupledExponentialUnPooledGEVD(
+        loc_intercept_prior=loc_intercept_prior,
+        loc_slope_prior=slope_prior,
+        scale_intercept_prior=scale_intercept_prior,
+        scale_slope_prior=slope_prior,
         concentration_prior=concentration_prior,
         spatial_dim_name=spatial_dim_name,
         time_dim_name=time_dim_name,
-        variable_name=variable_name
-        
+        variable_name=variable_name,
+        t0=t0,
     )
 
 
@@ -156,10 +171,14 @@ def train_model_gevd_mcmc(
 
 
     y = ds_bm[variable].values.squeeze()
+    t = ds_bm[covariate].values.squeeze()
+    assert len(y.shape) == 2
+    assert len(t.shape) == 1
 
     logger.info(f"Initializing Model")
     if variable == "t2max":
         model = init_t2m_model(
+            t_values=ds_bm[covariate].values,
             y_values=ds_bm[variable].values,
             spatial_dim_name=SPATIAL_DIM_NAME,
             time_dim_name=covariate,
@@ -167,7 +186,9 @@ def train_model_gevd_mcmc(
             
         )
     elif variable == "pr":
+        logger.info(f"Training PR MODEL...")
         model = init_pr_model(
+            t_values=ds_bm[covariate].values,
             y_values=ds_bm[variable].values,
             spatial_dim_name=SPATIAL_DIM_NAME,
             time_dim_name=covariate,
@@ -187,7 +208,7 @@ def train_model_gevd_mcmc(
     method = "map"
     svi_learner = SVILearner(model, peak_lr=peak_lr, end_lr=end_lr, init_lr=init_lr, num_steps=num_steps, num_warmup_steps=num_warmup_steps, method=method)
 
-    svi_posterior = svi_learner(y=y)
+    svi_posterior = svi_learner(t=t, y=y)
     
     logger.info("Grabbing initial parameters...")
     init_params = svi_posterior.median_params
@@ -204,7 +225,7 @@ def train_model_gevd_mcmc(
     )
     
     
-    mcmc_posterior = mcmc_learner(y=y)
+    mcmc_posterior = mcmc_learner(t=t, y=y)
     
     # Grabbing Posterior Samples
     
@@ -222,7 +243,7 @@ def train_model_gevd_mcmc(
     rng_key, rng_subkey = jrandom.split(rng_key)
 
 
-    posterior_predictive_samples = mcmc_posterior.posterior_predictive_samples(rng_subkey, num_timesteps=y.shape[0])
+    posterior_predictive_samples = mcmc_posterior.posterior_predictive_samples(rng_subkey, t=t)
         
     
     logger.info("Creating Dataset...")
@@ -237,6 +258,28 @@ def train_model_gevd_mcmc(
     
     az_ds.add_groups(az_ds_postpred)
     
+    # Posterior predictive samples
+    logger.info("Calculating Predictions...")
+    rng_key, rng_subkey = jrandom.split(rng_key)
+
+    t_pred = jnp.linspace(0.0, 2.5, 100)
+    posterior_predictive_samples = mcmc_posterior.posterior_predictive_samples(rng_subkey, t=t_pred)
+        
+    
+    logger.info("Creating Dataset...")
+    az_ds_preds = az.from_numpyro(
+        predictions=posterior_predictive_samples,
+        pred_dims=model.dimensions,
+        num_chains=num_chains,
+    )
+    # correct coordinates
+    az_ds_preds = az_ds_preds.assign_coords({covariate: t_pred})
+    az_ds_preds = az_ds_preds.assign_coords({SPATIAL_DIM_NAME: ds_bm[SPATIAL_DIM_NAME]})
+    
+    az_ds.add_groups(az_ds_preds)
+    
+    
+    
     logger.info("Calculating Log-Likelihood Stats...")
     stats = az.waic(az_ds)
     az_ds.log_likelihood.attrs["elpd_waic"] = stats.elpd_waic
@@ -248,14 +291,28 @@ def train_model_gevd_mcmc(
     save_path.mkdir(parents=True, exist_ok=True)
     az_ds.to_netcdf(filename=save_path.joinpath("az_nonstationary.zarr"))
     
-    logger.info(f"Grabbing Posterior Samples...")
-    posterior_samples = mcmc_posterior.posterior_samples
-    logger.info(f"Converting Posterior Samples to serializable format...")
-    posterior_samples = {k: np.asarray(v).tolist() for k, v in posterior_samples.items()}
+    # logger.info(f"Grabbing Posterior Samples...")
+    # posterior_samples = mcmc_posterior.posterior_samples
+    # logger.info(f"Converting Posterior Samples to serializable format...")
+    # posterior_samples = {k: np.asarray(v).tolist() for k, v in posterior_samples.items()}
     
-    logger.info("Saving Posterior Samples...")
-    OmegaConf.save(posterior_samples, save_path.joinpath("az_posterior_params.yaml"))
+    # logger.info("Saving Posterior Samples...")
+    # OmegaConf.save(posterior_samples, save_path.joinpath("az_posterior_params.yaml"))
     
+    
+@app.command()
+def train_model_gevd_lap(
+    dataset_path: str = "",
+    variable: str = "t2max",
+    covariate: str = "gmst",
+    save_path: str = "data/results",
+    num_map_warmup: int = 1_000,
+    num_mcmc_samples: int = 1_000,
+    num_chains: int = 4,
+    num_mcmc_warmup: int = 10_000,
+    seed: int = 123,
+):
+    raise NotImplementedError()
   
 if __name__ == '__main__':
     app()

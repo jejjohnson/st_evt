@@ -2,6 +2,8 @@ vars:
   - raw_path: data/raw
   - clean_path: data/clean
   - ml_ready_path: data/ml_ready
+  - viz_path: data/viz
+  - dataset: aemet
 stages:
   # CLEAN AEMET STATION DATA - 2m Max Temperature
   clean_aemet_t2max:

@@ -13,6 +13,7 @@ import optax
 import arviz as az
 from st_evt._src.utils.validation import contains_nan
 from loguru import logger
+from numpyro.infer import log_likelihood 
 
 
 class SVILearner(eqx.Module):
@@ -189,7 +190,7 @@ class SVIPosterior(eqx.Module):
         Returns:
             PyTree: The generated samples from the variational posterior.
         """
-        samples = self.guide.sample_posterior(rng_key=rng_key, params=self.params, sample_shape=(num_samples,))
+        samples = self.guide.sample_posterior(rng_key=rng_key, params=self.params, sample_shape=(num_samples,), **kwargs)
         return samples
 
     def posterior_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, **kwargs):
@@ -208,7 +209,7 @@ class SVIPosterior(eqx.Module):
         samples = predictive(rng_key=rng_key, **kwargs)
         return samples
     
-    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, **kwargs):
+    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, return_sites: list | None = None, **kwargs):
         """
         Generate samples from the posterior predictive distribution.
 
@@ -220,9 +221,16 @@ class SVIPosterior(eqx.Module):
         Returns:
             PyTree: The generated samples from the posterior predictive distribution.
         """
-        predictive = Predictive(model=self.model, guide=self.guide, params=self.params, num_samples=num_samples)
+        posterior_samples = self.variational_samples(rng_key=rng_key, num_samples=num_samples)
+        predictive = Predictive(model=self.model, posterior_samples=posterior_samples, return_sites=return_sites)
         samples = predictive(rng_key=rng_key, **kwargs)
         return samples
+    
+    def log_likelihood(self, rng_key: PRNGKeyArray, num_samples: int=100, **kwargs):
+        
+        # get posterior samples
+        posterior_samples = self.variational_samples(rng_key=rng_key, num_samples=num_samples)
+        return log_likelihood(model=self.model, posterior_samples=posterior_samples,  **kwargs)
 
 
 class MCMCLearner(eqx.Module):
