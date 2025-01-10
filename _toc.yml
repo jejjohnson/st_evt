@@ -20,26 +20,38 @@ root: README
 chapters:
   - title: Datasets
     sections:
-      - file: notebooks/datasets/datasets_overview.md
-      - file: notebooks/datasets/aemet/0.1_evt_stations_pr.ipynb
-      - file: notebooks/datasets/aemet/0.2_evt_stations_t2max.ipynb
+      - file: notes/datasets/datasets_overview.md
+      - file: notes/datasets/aemet/0.1_evt_stations_pr.ipynb
+      - file: notes/datasets/aemet/0.2_evt_stations_t2max.ipynb
   - title: Tutorials
     sections:
       - file: notes/tutorials.md
       - file: notes/pipelines.md
       - title: Extremes
         sections:
-          - file: notebooks/bm_extremes/aemet/1.1.1_bm_extremes_t2max_eda
-          - file: notebooks/bm_extremes/aemet/1.2_bm_extremes_practical
-      - title: Time Series - NonStationary
+          - file: notes/bm_extremes/aemet/1.1.1_bm_extremes_t2max_eda
+          - file: notes/bm_extremes/aemet/1.2_bm_extremes_practical
+      - title: Stationary IID
         sections:
-          - file: notebooks/models/1_timeseries/nonstationary/1_station_t2m_gevd_eda
-          - file: notebooks/models/1_timeseries/nonstationary/2_station_t2m_gevd_model_mcmc
-          - file: notebooks/models/1_timeseries/nonstationary/3_station_t2m_gevd_analysis
-      - title: SpatioTemporalField - Stationary
+          - file: notes/tutorials_stationary_iid/1_spain_t2m_gevd_eda
+          - file: notes/tutorials_stationary_iid/2a_spain_t2m_gevd_model_mcmc
+          - file: notes/tutorials_stationary_iid/2b_spain_t2m_gevd_analysis_station
+          - file: notes/tutorials_stationary_iid/2c_spain_t2m_gevd_analysis_region
+      - title: NonStationary IID
         sections:
-          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/1_spain_t2m_gevd_eda
-          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2a_spain_t2m_gevd_model_mcmc
-          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2b_spain_t2m_gevd_analysis_station
-          - file: notebooks/models/2_spatiotemporal_field/stationary_iid/2c_spain_t2m_gevd_analysis_region
+          - file: notes/tutorials_nonstationary_iid/2a_t2m_gevd_mcmc
+          - file: notes/tutorials_nonstationary_iid/2b_t2m_gevd_mcmc_station
+          - file: notes/tutorials_nonstationary_iid/2c_t2m_gevd_mcmc_station_pos
+          - file: notes/tutorials_nonstationary_iid/2d_t2m_gevd_mcmc_region
+      - title: Stationary + Spatial Dependencies
+        sections:
+          - file: notes/tutorials_spatiotemporal_gp/2.2.1_pr_sf_vgp_laplacian
+          - file: notes/tutorials_spatiotemporal_gp/2.2.2_pr_sf_vgp_laplacian_station_post
+      - title: NonStationary + Spatial Dependencies
+        sections:
+          - file: notes/tutorials_spatiotemporal_gp/3.1.1_t2m_st_vgp_laplacian
+          - file: notes/tutorials_spatiotemporal_gp/3.1.2_t2m_st_vgp_laplacian_station_post
+          - file: notes/tutorials_spatiotemporal_gp/3.1.3_t2m_st_vgp_laplacian_station_postpred
+          - file: notes/tutorials_spatiotemporal_gp/3.1.4_t2m_st_vgp_laplacian_region
+
           

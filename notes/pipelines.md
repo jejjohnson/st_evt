@@ -41,12 +41,6 @@ dvc repro pipelines/download/dvc.yaml:download_gmst
 
 ```
 
-**GMST**
-
-```bash
-dvc repro download_gmst
-```
-
 ---
 ### II: Cleaning
 
