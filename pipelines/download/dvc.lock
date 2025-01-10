@@ -36,3 +36,27 @@ stages:
       hash: md5
       md5: df907741d68510267e980d1ebf3fcdb5
       size: 35564
+  download_eobs:
+    cmd: python st_evt/_src/modules/download/eobs.py --filepath 'data/raw/eobs'
+    deps:
+    - path: st_evt/_src/modules/download/eobs.py
+      hash: md5
+      md5: 1f49d87e2d7d22047f849fd326df8b29
+      size: 3946
+    outs:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    - path: data/raw/eobs/pr_mean_eobs_0.1.nc
+      hash: md5
+      md5: 2e37d5a9ca95446dc236d8fe2e0b8708
+      size: 1661595486
+    - path: data/raw/eobs/tmax_mean_eobs_0.1.nc
+      hash: md5
+      md5: 7ffb3b41030360cfd463afef31c3178d
+      size: 4973952641
+    - path: data/raw/eobs/ws_mean_eobs_0.1.nc
+      hash: md5
+      md5: b93684786fac189f4cf1e110c4a38f41
+      size: 2218208336

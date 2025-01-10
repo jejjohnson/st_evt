@@ -3,7 +3,7 @@ import math
 import numpyro
 import jax.random as jrandom
 import numpy as np
-from numpyro.infer.autoguide import AutoDelta, AutoLaplaceApproximation, AutoGuide
+from numpyro.infer.autoguide import AutoDelta, AutoLaplaceApproximation, AutoNormal, AutoDiagonalNormal, AutoGuide
 from numpyro.infer import MCMC, NUTS, SVI, Predictive, Trace_ELBO
 from numpyro.infer import init_to_value, init_to_median
 from dataclasses import dataclass
@@ -13,7 +13,7 @@ import optax
 import arviz as az
 from st_evt._src.utils.validation import contains_nan
 from loguru import logger
-from numpyro.infer import log_likelihood 
+from numpyro.infer import log_likelihood
 
 
 class SVILearner(eqx.Module):
@@ -87,7 +87,7 @@ class SVILearner(eqx.Module):
 
         self.optimizer = optax.chain(
             optax.adam(learning_rate=schedule),  # Adam optimizer
-            optax.clip(0.01)
+            optax.clip(clip_norm)
         )
 
         # initialize guide
@@ -95,6 +95,10 @@ class SVILearner(eqx.Module):
             self.guide = AutoDelta(self.model, init_loc_fn=init_to_median(num_samples=100))
         elif method.lower() == "laplace":
             self.guide = AutoLaplaceApproximation(self.model, init_loc_fn=init_to_median(num_samples=100))
+        elif method.lower() == "normal":
+            self.guide = AutoNormal(self.model, init_loc_fn=init_to_median(num_samples=100))
+        elif method.lower() == "normal_diag":
+            self.guide = AutoDiagonalNormal(self.model, init_loc_fn=init_to_median(num_samples=100))
         else:
             raise ValueError(f"Unrecognized method: {method}")
 
@@ -122,7 +126,6 @@ class SVILearner(eqx.Module):
             print('\n...Program Stopped Manually!')
             raise
             
-        
         return SVIPosterior(model=self.model, guide=self.guide, svi_result=svi_result)
     
 
@@ -165,7 +168,6 @@ class SVIPosterior(eqx.Module):
         """
         return self.guide.median(self.params)
     
-    @property
     def quantile_params(self, quantiles: List[float]):
         """
         Get the quantile parameters of the posterior.
@@ -176,7 +178,7 @@ class SVIPosterior(eqx.Module):
         Returns:
             PyTree: The quantile parameters of the posterior.
         """
-        return self.guide.median(self.params)
+        return self.guide.quantiles(self.params)
     
     def variational_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, **kwargs):
         """
@@ -209,7 +211,7 @@ class SVIPosterior(eqx.Module):
         samples = predictive(rng_key=rng_key, **kwargs)
         return samples
     
-    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, return_sites: list | None = None, **kwargs):
+    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, return_sites: list | None = None, parallel: bool=False, **kwargs):
         """
         Generate samples from the posterior predictive distribution.
 
@@ -222,14 +224,19 @@ class SVIPosterior(eqx.Module):
             PyTree: The generated samples from the posterior predictive distribution.
         """
         posterior_samples = self.variational_samples(rng_key=rng_key, num_samples=num_samples)
-        predictive = Predictive(model=self.model, posterior_samples=posterior_samples, return_sites=return_sites)
+        predictive = Predictive(model=self.model, posterior_samples=posterior_samples, parallel=parallel, return_sites=return_sites)
         samples = predictive(rng_key=rng_key, **kwargs)
         return samples
     
-    def log_likelihood(self, rng_key: PRNGKeyArray, num_samples: int=100, **kwargs):
-        
+    def log_likelihood_samples(self, rng_key: PRNGKeyArray, num_samples: int=100, posterior_samples: Dict | None = None, **kwargs):
         # get posterior samples
-        posterior_samples = self.variational_samples(rng_key=rng_key, num_samples=num_samples)
+        if posterior_samples is None:
+            posterior_samples = self.variational_samples(rng_key=rng_key, num_samples=num_samples)
+        return log_likelihood(model=self.model, posterior_samples=posterior_samples,  **kwargs)
+    
+    def log_likelihood_params(self, rng_key: PRNGKeyArray, posterior_samples: Dict | None = None, **kwargs):
+        if posterior_samples is None:
+            posterior_samples = self.posterior_samples(rng_key=rng_key, num_samples=1)
         return log_likelihood(model=self.model, posterior_samples=posterior_samples,  **kwargs)
 
 
@@ -320,7 +327,7 @@ class MCMCPosterior(eqx.Module):
         """
         return self.mcmc.get_samples()
     
-    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, parallel: bool=False, **kwargs):
+    def posterior_predictive_samples(self, rng_key: PRNGKeyArray, parallel: bool=False, return_sites: list | None = None, **kwargs):
         """
         Generate posterior predictive samples using the MCMC sampler.
 
@@ -336,7 +343,7 @@ class MCMCPosterior(eqx.Module):
             model=self.model,
             posterior_samples=self.posterior_samples,
             parallel=parallel,
-            return_sites=self.model.variables
+            return_sites=self.model.variables if return_sites is None else return_sites
         )
 
         samples = posterior_predictive(rng_key=rng_key, **kwargs)

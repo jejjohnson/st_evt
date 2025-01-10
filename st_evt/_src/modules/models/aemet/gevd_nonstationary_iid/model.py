@@ -143,7 +143,6 @@ def init_pr_model(
     )
 
 
-
 @app.command()
 def train_model_gevd_mcmc(
     dataset_path: str = "",
@@ -168,8 +167,7 @@ def train_model_gevd_mcmc(
     with xr.open_dataset(DATA_URL, engine="zarr") as f:
         ds_bm = f.load()
         ds_bm = ds_bm.where(ds_bm.red_feten_mask == 1, drop=True)
-
-
+    
     y = ds_bm[variable].values.squeeze()
     t = ds_bm[covariate].values.squeeze()
     assert len(y.shape) == 2

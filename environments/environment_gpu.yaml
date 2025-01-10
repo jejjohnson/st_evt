@@ -14,6 +14,7 @@ dependencies:
   - scikit-learn # Machine Learning
   - statsmodels
   - scikit-image
+  - feature_engine
   # - pandas<=2.1.0
   - pandas
   - geopandas
@@ -24,6 +25,7 @@ dependencies:
   - metpy
   - openpyxl
   - xoa
+  - cdsapi
   # Plotting Libraries
   - matplotlib # standard plotting library
   - seaborn # Stats viz library

@@ -96,12 +96,13 @@ def plot_return_level_gevd_manual_unc(
     ax.plot(
         return_periods, median, 
         linestyle="-", linewidth=3, color="tab:red",
-        label="Median"
+        label="Median",
     )
     ax.plot(
         return_periods, mu, 
-        linestyle="--", linewidth=3, color="tab:red",
-        label="Mean"
+        linestyle="--", linewidth=3, color="tab:blue",
+        label="Mean",
+        zorder=0
     )
 
     ax.fill_between(
@@ -468,15 +469,21 @@ def plot_return_level_hist(arxiv_summary, figures_save_dir):
         return fig, ax
 
 
-def plot_return_level_hist_manual_unc(return_level_100, figures_save_dir, **kwargs):
+def plot_return_level_hist_manual_unc(return_level_100, figures_save_dir: str | None = None, log_bins: bool = False, **kwargs):
     rl_lb, rl_median, rl_ub = return_level_100.quantile(q=[0.025, 0.5, 0.975])
     rl_mean = return_level_100.mean()
     rl_stddev = return_level_100.std()
+    
+    bins = kwargs.get("bins", 20)
+    if log_bins:
+        hist, bins = np.histogram(return_level_100.values.ravel(), bins=bins)
+        bins = np.logspace(np.log10(bins[0]),np.log10(bins[-1]),len(bins))
+        
 
     fig, ax = plt.subplots()
     return_level_100.plot.hist(
         ax=ax,
-        density=True, bins=kwargs.get("bins", 20), linewidth=1, 
+        density=True, bins=bins, linewidth=1, 
         color="black",
         label="Histogram", zorder=3,
         alpha=0.25, 
@@ -489,7 +496,7 @@ def plot_return_level_hist_manual_unc(return_level_100, figures_save_dir, **kwar
     az.plot_kde(return_level_100.values.ravel(), ax=ax, plot_kwargs=plot_kwargs)
     
     ax.scatter(rl_median, 0.0, s=150, edgecolor="black", marker="o", color="tab:red", zorder=10, label=f"Median: {rl_median:.2f} ({rl_lb:.2f}, {rl_ub:.2f})", clip_on=False)
-    ax.scatter(rl_mean, 0.0, s=150, edgecolor="black", marker="o", color="tab:blue", zorder=10, label=f"Mean: {rl_mean:.2f} ± {rl_stddev:.2f}", clip_on=False)
+    ax.scatter(rl_mean, 0.0, s=150, edgecolor="black", marker="o", color="tab:blue", linestyle="dashed", zorder=10, label=f"Mean: {rl_mean:.2f} ± {rl_stddev:.2f}", clip_on=False)
     ax.set(
         xlabel="Return Levels [°C]",
         ylabel="Probability Density Function",

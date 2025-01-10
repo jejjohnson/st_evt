@@ -68,3 +68,97 @@ stages:
       md5: e758a49edc2fe8f36ad6a3444b313140.dir
       size: 37185951
       nfiles: 90
+  clean_oebs_pr:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-pr-eobs --load-path 'data/raw/eobs'
+      --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    - path: data/raw/eobs/pr_mean_eobs_0.1.nc
+      hash: md5
+      md5: 2e37d5a9ca95446dc236d8fe2e0b8708
+      size: 1661595486
+  clean_eobs_pr:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-pr-eobs --load-path 'data/raw/eobs'
+      --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    - path: data/raw/eobs/pr_mean_eobs_0.1.nc
+      hash: md5
+      md5: 2e37d5a9ca95446dc236d8fe2e0b8708
+      size: 1661595486
+    outs:
+    - path: data/clean/eobs/pr_eobs_spain.zarr
+      hash: md5
+      md5: d82e6f168e3976756e1f6b0278628b92.dir
+      size: 123819191
+      nfiles: 529
+  clean_elev_pr:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-elev-eobs --load-path 'data/raw/eobs'
+      --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    outs:
+    - path: data/clean/eobs/elev_eobs_spain.zarr
+      hash: md5
+      md5: ee3f8af89b625d2ff4e84fee70ad085c.dir
+      size: 26370
+      nfiles: 12
+  clean_eobs_elev:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-elev-eobs --load-path 'data/raw/eobs'
+      --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    outs:
+    - path: data/clean/eobs/elev_eobs_spain.zarr
+      hash: md5
+      md5: ee3f8af89b625d2ff4e84fee70ad085c.dir
+      size: 26370
+      nfiles: 12
+  clean_eobs_t2max:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-t2max-eobs --load-path 'data/raw/eobs'
+      --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    - path: data/raw/eobs/tmax_mean_eobs_0.1.nc
+      hash: md5
+      md5: 7ffb3b41030360cfd463afef31c3178d
+      size: 4973952641
+    outs:
+    - path: data/clean/eobs/t2max_eobs_spain.zarr
+      hash: md5
+      md5: 09a78d718c0900909e90fc8a0e422fac.dir
+      size: 522167090
+      nfiles: 529
+  clean_eobs_ws:
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-windspeed-eobs --load-path
+      'data/raw/eobs' --save-path 'data/clean/eobs'
+    deps:
+    - path: data/raw/eobs/elev_eobs_0.1.nc
+      hash: md5
+      md5: 37bac35a5107d8da4cf24a8ba65e6c96
+      size: 560654
+    - path: data/raw/eobs/ws_mean_eobs_0.1.nc
+      hash: md5
+      md5: b93684786fac189f4cf1e110c4a38f41
+      size: 2218208336
+    outs:
+    - path: data/clean/eobs/ws_eobs_spain.zarr
+      hash: md5
+      md5: b200aebb98964c49a288c73a2163e8e5.dir
+      size: 318576027
+      nfiles: 529

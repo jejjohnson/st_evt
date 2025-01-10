@@ -1,7 +1,7 @@
 from typing import Optional
 import matplotlib.pyplot as plt
 import arviz as az
-
+import numpy as np
 
 def plot_scatter_ts(
     ds_bm,
@@ -26,12 +26,17 @@ def plot_scatter_ts(
     return fig, ax, pts
 
 
-def plot_histogram(ds, ax=None, figures_save_dir: Optional[str]=None):
+def plot_histogram(ds, ax=None, figures_save_dir: Optional[str]=None, log_bins: bool=False):
     if ax is not None:
         fig = ax.get_figure()
     else:
         fig, ax = plt.subplots(figsize=(10,5))
-    ds.plot.hist(ax=ax, bins=20, linewidth=4, density=False, fill=False)
+    if log_bins:
+        hist, bins = np.histogram(ds.values.ravel(), bins=20)
+        bins = np.logspace(np.log10(0.01),np.log10(bins[-1]),len(bins))
+    else:
+        bins = 20
+    ds.plot.hist(ax=ax, bins=bins, linewidth=4, density=False, fill=False)
     ax.set(
         ylabel="Number of Observations",
         title=f"",
@@ -42,14 +47,20 @@ def plot_histogram(ds, ax=None, figures_save_dir: Optional[str]=None):
     return fig, ax
     
     
-def plot_density(ds, ax=None, figures_save_dir: Optional[str]=None):
+def plot_density(ds, ax=None, figures_save_dir: Optional[str]=None, log_bins: bool=False):
     if ax is not None:
         fig = ax.get_figure()
     else:
         fig, ax = plt.subplots(figsize=(10,5))
+        
+    if log_bins:
+        hist, bins = np.histogram(ds.values.ravel(), bins=20)
+        bins = np.logspace(np.log10(0.01),np.log10(bins[-1]),len(bins))
+    else:
+        bins = 20
     ds.plot.hist(
         ax=ax,
-        density=True, bins=20, linewidth=1, 
+        density=True, bins=bins, linewidth=1, 
         color="black",
         label="Histogram", zorder=3,
         alpha=0.25, 

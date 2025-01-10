@@ -10,6 +10,7 @@ def plot_locationscale_return_regression(
     scales = None,
     returns = None,
     observations = None,
+    observations_window: bool=True
 ):
 
     fig, ax = plt.subplots(figsize=(10,5))
@@ -72,16 +73,17 @@ def plot_locationscale_return_regression(
             marker="o",
             label="Observations",
         )
-    
-        ax.fill_betweenx(
-            np.linspace(observations.min(), observations.max(), 10), 
-            observations[x_axis].min(),
-            observations[x_axis].max(),
-            alpha=0.3, color="black",
-            linestyle="dashed", 
-            label="Observation Window",
-            zorder=5,
-        )
+
+        if observations_window:
+            ax.fill_betweenx(
+                np.linspace(observations.min(), observations.max(), 10), 
+                observations[x_axis].min(),
+                observations[x_axis].max(),
+                alpha=0.3, color="black",
+                linestyle="dashed", 
+                label="Observation Window",
+                zorder=5,
+            )
     
     
     ax.set(

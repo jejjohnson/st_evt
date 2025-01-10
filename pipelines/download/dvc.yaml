@@ -26,3 +26,14 @@ stages:
      - st_evt/_src/modules/download/gmst.py
     outs:
      - ${raw_path}/gmst/gmst_david.xlsx
+  download_eobs:
+    desc: Download EOBS data from website.
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/download/eobs.py --filepath '${raw_path}/eobs'
+    deps:
+     - st_evt/_src/modules/download/eobs.py
+    outs:
+     - ${raw_path}/eobs/tmax_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/pr_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/ws_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/elev_eobs_0.1.nc

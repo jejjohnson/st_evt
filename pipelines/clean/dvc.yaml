@@ -33,3 +33,35 @@ stages:
      - ${raw_path}/gmst/gmst_david.xlsx
     outs:
      - ${clean_path}/gmst/gmst_david.zarr
+  # CLEAN AEMET STATION DATA - 2m Max Temperature
+  clean_eobs_pr:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-pr-eobs --load-path '${raw_path}/eobs' --save-path '${clean_path}/eobs'
+    deps:
+     - ${raw_path}/eobs/pr_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/elev_eobs_0.1.nc
+    outs:
+     - data/clean/eobs/pr_eobs_spain.zarr
+  clean_eobs_elev:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-elev-eobs --load-path '${raw_path}/eobs' --save-path '${clean_path}/eobs'
+    deps:
+     - ${raw_path}/eobs/elev_eobs_0.1.nc
+    outs:
+     - data/clean/eobs/elev_eobs_spain.zarr
+  clean_eobs_t2max:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-t2max-eobs --load-path '${raw_path}/eobs' --save-path '${clean_path}/eobs'
+    deps:
+     - ${raw_path}/eobs/tmax_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/elev_eobs_0.1.nc
+    outs:
+     - data/clean/eobs/t2max_eobs_spain.zarr
+  clean_eobs_ws:
+    wdir: ./../../
+    cmd: python st_evt/_src/modules/clean/eobs.py clean-windspeed-eobs --load-path '${raw_path}/eobs' --save-path '${clean_path}/eobs'
+    deps:
+     - ${raw_path}/eobs/ws_mean_eobs_0.1.nc
+     - ${raw_path}/eobs/elev_eobs_0.1.nc
+    outs:
+     - data/clean/eobs/ws_eobs_spain.zarr

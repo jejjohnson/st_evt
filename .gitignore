@@ -18,3 +18,5 @@
 *.env
 *.csv
 *.png
+\notebooks/
+\notes/tutorials_spatiotemporal_gp/dev
